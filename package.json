@@ -1,0 +1,29 @@
+{
+  "name": "exprest",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "lint": "eslint *.js",
+    "test": "npm run lint"
+  },
+  "engines": {
+    "node" : ">=4.2.0"
+  },
+  "dependencies": {
+    "body-parser": "~1.15.2",
+    "compression": "^1.6.2",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.1",
+    "debug": "~2.2.0",
+    "express": "~4.14.0",
+    "helmet": "^3.1.0",
+    "method-override": "^2.3.7",
+    "mongoose": "^4.7.1",
+    "mongoose-json-select": "^0.2.1",
+    "morgan": "~1.7.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.11.1"
+  }
+}
