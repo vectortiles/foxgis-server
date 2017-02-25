@@ -3,9 +3,6 @@ const path = require('path')
 const _ = require('lodash')
 const async = require('async')
 const mkdirp = require('mkdirp')
-const shortid = require('shortid')
-const zipfile = require('zipfile')
-const AdmZip = require('adm-zip')
 const rd = require('rd')
 const spritezero = require('spritezero')
 const Sprite = require('../models/sprite')
@@ -37,39 +34,14 @@ module.exports.get = function(req, res, next) {
 
 module.exports.create = function(req, res, next) {
   const owner = req.params.owner
-  const filePath = req.files[0].path
+  const name = req.body.name
+  const description = req.body.description
 
-  const spriteId = shortid.generate()
-  const originalname = req.files[0].originalname
-  const name = path.basename(originalname, path.extname(originalname))
-
-  async.autoInject({
-    spriteDir: callback => {
-      const dir = path.join('sprites', owner, spriteId)
-      mkdirp(dir, err => callback(err, dir))
-    },
-    unzip: (spriteDir, callback) => {
-      try {
-        const zip = new zipfile.ZipFile(filePath)
-        async.each(zip.names, (name, next) => {
-          if (path.extname(name) !== '.svg') return next()
-          zip.copyFile(name, path.join(spriteDir, path.basename(name)), next)
-        }, callback)
-
-      } catch (err) {
-        return callback(err)
-      }
-    },
-    writeDB: (unzip, callback) => {
-      const sprite = new Sprite({spriteId, owner, name})
-      sprite.save((err, sprite) => callback(err, sprite))
-    }
-  }, (err, results) => {
-    fs.unlink(filePath)
-
+  const sprite = new Sprite({owner, name, description})
+  sprite.save((err, sprite) => {
     if (err) return next(err)
 
-    res.json(results.writeDB)
+    res.json(sprite)
   })
 }
 
@@ -101,41 +73,12 @@ module.exports.delete = function(req, res, next) {
 }
 
 
-module.exports.getIcons = function(req, res, next) {
-  const owner = req.params.owner
-  const spriteId = req.params.spriteId
-  const spriteDir = path.join('sprites', owner, spriteId)
-
-  Sprite.findOne({owner, spriteId}, (err, sprite) => {
-    if (err) return next(err)
-    if (!sprite) return res.sendStatus(404)
-
-    const zip = new AdmZip()
-    zip.addLocalFolder(spriteDir)
-
-    res.attachment(sprite.name + '.zip')
-    res.send(zip.toBuffer())
-  })
-}
-
-
-module.exports.getIcon = function(req, res, next) {
-  const owner = req.params.owner
-  const spriteId = req.params.spriteId
-  const icon = req.params.icon
-  const iconPath = path.join('sprites', owner, spriteId, icon + '.svg')
-
-  res.sendFile(path.resolve(iconPath), err => {
-    if (err) return next(err)
-  })
-}
-
-
 module.exports.createIcon = function(req, res, next) {
   const owner = req.params.owner
   const spriteId = req.params.spriteId
   const icon = req.params.icon
-  const iconPath = path.join('sprites', owner, spriteId, icon + '.svg')
+  const spriteDir = path.join('sprites', owner, spriteId)
+  const iconPath = path.join(spriteDir, icon + '.svg')
 
   const filePath = req.files[0].path
   const originalname = req.files[0].originalname
@@ -144,10 +87,19 @@ module.exports.createIcon = function(req, res, next) {
     return res.status(400).json(new Error('Only supports svg icons'))
   }
 
-  fs.rename(filePath, iconPath, err => {
+  Sprite.findOne({owner, spriteId}, (err, sprite) => {
     if (err) return next(err)
+    if (!sprite) return res.sendStatus(404)
 
-    res.sendStatus(204)
+    mkdirp(spriteDir, err => {
+      if (err) return next(err)
+
+      fs.rename(filePath, iconPath, err => {
+        if (err) return next(err)
+
+        res.sendStatus(204)
+      })
+    })
   })
 }
 
@@ -158,11 +110,16 @@ module.exports.deleteIcon = function(req, res, next) {
   const icon = req.params.icon
   const iconPath = path.join('sprites', owner, spriteId, icon + '.svg')
 
-  fs.unlink(iconPath, function(err) {
-    if (err && err.code === 'ENOENT') return res.sendStatus(404)
+  Sprite.findOne({owner, spriteId}, (err, sprite) => {
     if (err) return next(err)
+    if (!sprite) return res.sendStatus(404)
 
-    res.sendStatus(204)
+    fs.unlink(iconPath, err => {
+      if (err && err.code === 'ENOENT') return res.sendStatus(404)
+      if (err) return next(err)
+
+      res.sendStatus(204)
+    })
   })
 }
 
