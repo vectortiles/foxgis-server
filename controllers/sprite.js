@@ -4,7 +4,7 @@ const _ = require('lodash')
 const async = require('async')
 const mkdirp = require('mkdirp')
 const rd = require('rd')
-const spritezero = require('spritezero')
+const spritezero = require('@mapbox/spritezero')
 const Sprite = require('../models/sprite')
 
 
