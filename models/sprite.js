@@ -6,7 +6,7 @@ const shortid = require('shortid')
 const SpriteSchema = new mongoose.Schema({
   spriteId: { type: String, default: shortid.generate},
   owner: String,
-  name: { type: String, default: 'sprite'},
+  name: { type: String, default: 'Sprite'},
   description: String
 }, { timestamps: true })
 
