@@ -8,10 +8,9 @@ const FontSchema = new mongoose.Schema({
   familyName: String,
   styleName: String,
   coverages: [{
-    name: String,
-    id: String,
-    count: Number,
-    total: Number,
+    language: String,
+    code: String,
+    percentage: Number,
     _id: false
   }],
 }, { timestamps: true })
@@ -19,7 +18,7 @@ const FontSchema = new mongoose.Schema({
 FontSchema.plugin(select, '-_id -__v')
 
 FontSchema.index({owner: 1})
-FontSchema.index({owner: 1, spriteId: 1}, {unique: true})
+FontSchema.index({owner: 1, fontname: 1}, {unique: true})
 
 
 module.exports = mongoose.model('Font', FontSchema)

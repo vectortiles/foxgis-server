@@ -3,6 +3,7 @@ const path = require('path')
 const _ = require('lodash')
 const async = require('async')
 const mkdirp = require('mkdirp')
+const rimraf = require('rimraf')
 const rd = require('rd')
 const spritezero = require('@mapbox/spritezero')
 const Sprite = require('../models/sprite')
@@ -41,7 +42,12 @@ module.exports.create = function(req, res, next) {
   sprite.save((err, sprite) => {
     if (err) return next(err)
 
-    res.json(sprite)
+    const spriteDir = path.join('sprites', owner, sprite.spriteId)
+    mkdirp(spriteDir, err => {
+      if (err) return next(err)
+
+      res.json(sprite)
+    })
   })
 }
 
@@ -63,12 +69,17 @@ module.exports.update = function(req, res, next) {
 module.exports.delete = function(req, res, next) {
   const owner = req.params.owner
   const spriteId = req.params.spriteId
+  const spriteDir = path.join('sprites', owner, spriteId)
 
   Sprite.findOneAndRemove({owner, spriteId}, (err, sprite) => {
     if (err) return next(err)
     if (!sprite) return res.sendStatus(404)
 
-    res.sendStatus(204)
+    rimraf(spriteDir, err => {
+      if (err) return next(err)
+
+      res.sendStatus(204)
+    })
   })
 }
 
@@ -84,22 +95,19 @@ module.exports.createIcon = function(req, res, next) {
   const originalname = req.files[0].originalname
 
   if (path.extname(originalname).toLowerCase() !== '.svg') {
-    return res.status(400).json(new Error('Only supports svg icons'))
+    fs.unlink(filePath)
+    return res.status(400).json(new Error('Only supports svg icons.'))
   }
 
-  Sprite.findOne({owner, spriteId}, (err, sprite) => {
+  async.autoInject({
+    mkdir: callback => mkdirp(spriteDir, callback),
+
+    rename: (mkdir, callback) => fs.rename(filePath, iconPath, callback)
+  }, err => {
+    fs.unlink(filePath)
     if (err) return next(err)
-    if (!sprite) return res.sendStatus(404)
 
-    mkdirp(spriteDir, err => {
-      if (err) return next(err)
-
-      fs.rename(filePath, iconPath, err => {
-        if (err) return next(err)
-
-        res.sendStatus(204)
-      })
-    })
+    res.sendStatus(204)
   })
 }
 
@@ -110,16 +118,11 @@ module.exports.deleteIcon = function(req, res, next) {
   const icon = req.params.icon
   const iconPath = path.join('sprites', owner, spriteId, icon + '.svg')
 
-  Sprite.findOne({owner, spriteId}, (err, sprite) => {
+  fs.unlink(iconPath, err => {
+    if (err && err.code === 'ENOENT') return res.sendStatus(404)
     if (err) return next(err)
-    if (!sprite) return res.sendStatus(404)
 
-    fs.unlink(iconPath, err => {
-      if (err && err.code === 'ENOENT') return res.sendStatus(404)
-      if (err) return next(err)
-
-      res.sendStatus(204)
-    })
+    res.sendStatus(204)
   })
 }
 
@@ -135,6 +138,7 @@ module.exports.getSprite = function(req, res, next) {
     files: callback => {
       rd.readFileFilter(spriteDir, /\.svg$/i, callback)
     },
+
     svgs: (files, callback) => {
       async.map(files, (file, next) => {
         fs.readFile(file, (err, buffer) => {
@@ -146,6 +150,7 @@ module.exports.getSprite = function(req, res, next) {
         })
       }, callback)
     },
+
     sprite: (svgs, callback) => {
       if (format === 'json') {
         spritezero.generateLayout(svgs, scale, true, callback)

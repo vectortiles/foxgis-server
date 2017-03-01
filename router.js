@@ -11,13 +11,12 @@ const upload = multer({
 })
 
 // Font API
-// router.get('/fonts/:username', fonts.list)
-// router.get('/fonts/:username/:fontname', fonts.get)
-// router.post('/fonts/:username', upload.any(), fonts.create)
-// router.patch('/fonts/:username/:fontname', fonts.update)
-// router.delete('/fonts/:username/:fontname', fonts.delete)
-// router.get('/fonts/:username/:fontstacks/:range.pbf', fonts.getGlyphs)
-// router.get('/fonts/:username/:fontname/thumbnail', fonts.getThumbnail)
+router.get('/fonts/:username', fonts.list)
+router.get('/fonts/:username/:fontname', fonts.get)
+router.post('/fonts/:username', upload.any(), fonts.create)
+router.delete('/fonts/:username/:fontname', fonts.delete)
+router.get('/fonts/:username/:fontstack/:range.pbf', fonts.getGlyphs)
+router.get('/fonts/:username/:fontname/thumbnail', fonts.getThumbnail)
 
 // Sprite API
 router.get('/sprites/:owner', sprites.list)
