@@ -77,7 +77,7 @@ module.exports.create = function(req, res, next) {
           return {
             language: coverage.name,
             code: coverage.id,
-            percentage: (coverage.count / coverage.total * 100).toFixed()
+            percentage: Math.round(coverage.count / coverage.total * 100)
           }
         })
       }
@@ -138,6 +138,7 @@ module.exports.getGlyphs = function(req, res, next) {
     },
 
     combine: (glyphs, callback) => {
+      if (glyphs.length === 0) return callback({status: 404})
       callback(null, glyphPbfComposite.combine(glyphs))
     }
   }, (err, results) => {

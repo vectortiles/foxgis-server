@@ -38,7 +38,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   res.status(err.status || 500)
   res.json({
-    error: app.get('env') === 'development' ? err.stack.split('\n') : [],
+    error: app.get('env') === 'development' && err.stack ? err.stack.split('\n') : [],
     message: err.message
   })
 })

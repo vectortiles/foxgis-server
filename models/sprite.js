@@ -4,16 +4,16 @@ const shortid = require('shortid')
 
 
 const SpriteSchema = new mongoose.Schema({
-  spriteId: { type: String, default: shortid.generate},
+  spriteId: { type: String, default: shortid.generate },
   owner: String,
-  name: { type: String, default: 'Sprite'},
+  name: { type: String, default: 'Sprite' },
   description: String
 }, { timestamps: true })
 
 SpriteSchema.plugin(select, '-_id -__v')
 
-SpriteSchema.index({owner: 1})
-SpriteSchema.index({owner: 1, spriteId: 1}, {unique: true})
+SpriteSchema.index({ owner: 1 })
+SpriteSchema.index({ owner: 1, spriteId: 1 }, { unique: true })
 
 
 module.exports = mongoose.model('Sprite', SpriteSchema)

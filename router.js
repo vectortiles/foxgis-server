@@ -1,5 +1,6 @@
 const express = require('express')
 const multer = require('multer')
+const tilesets = require('./controllers/tilesets')
 const fonts = require('./controllers/font')
 const sprites = require('./controllers/sprite')
 
@@ -9,6 +10,15 @@ const upload = multer({
   dest: 'uploads/',
   limits: { fieldSize: 200000000, files: 1 }
 })
+
+// Tileset API
+router.get('/tilesets/:owner', tilesets.list)
+router.get('/tilesets/:owner/:tilesetId', tilesets.get)
+router.post('/tilesets/:owner', upload.any(), tilesets.create)
+router.put('/tilesets/:owner/:tilesetId', upload.any(), tilesets.replace)
+router.patch('/tilesets/:owner/:tilesetId', tilesets.update)
+router.delete('/tilesets/:owner/:tilesetId', tilesets.delete)
+router.get('/tilesets/:owner/:tilesetId/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', tilesets.getTile)
 
 // Font API
 router.get('/fonts/:owner', fonts.list)
