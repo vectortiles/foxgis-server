@@ -2,10 +2,10 @@ const fs = require('fs')
 const path = require('path')
 const async = require('async')
 const mkdirp = require('mkdirp')
-const rimraf = require('rimraf')
-const fontmachine = require('fontmachine')
+const fontnik = require('fontnik')
 const fontscope = require('font-scope')
-const Font = require('font')
+const glyphPbfComposite = require('@mapbox/glyph-pbf-composite')
+const Font = require('../models/font')
 
 
 module.exports.list = function(req, res, next) {
@@ -40,40 +40,40 @@ module.exports.create = function(req, res, next) {
   const ext = path.extname(originalname).toLowerCase()
   if (ext !== '.ttf' && ext !== '.otf') {
     fs.unlink(filePath)
-    return res.status(400).json(new Error('Only supports otf, ttf fonts.'))
+    return res.status(400).json({message: 'Only supports otf, ttf fonts.'})
   }
 
-  async.atuoInject({
+  async.autoInject({
     buffer: callback => {
       fs.readFile(filePath, callback)
     },
 
-    font: (buffer, callback) => {
-      fontmachine.makeGlyphs({ font: buffer, filetype: ext }, callback)
+    metadata: (buffer, callback) => {
+      fontnik.load(buffer, (err, faces) => {
+        if (err) return callback(err)
+
+        faces[0].fontname = [faces[0].family_name, faces[0].style_name].join(' ').trim()
+        callback(null, faces[0])
+      })
     },
 
-    fontDir: (font, callback) => {
-      const fontDir = path.join('fonts', owner, font.name)
+    fontDir: (callback) => {
+      const fontDir = path.join('fonts', owner)
       mkdirp(fontDir, err => callback(err, fontDir))
     },
 
-    writePbf: (font, fontDir, callback) => {
-      async.each(font.stack, (pbf, next) => {
-        fs.writeFile(path.join(fontDir, pbf.name), pbf.data, next)
-      }, callback)
+    rename: (metadata, fontDir, callback) => {
+      const fontPath = path.join(fontDir, metadata.fontname)
+      fs.rename(filePath, fontPath, callback)
     },
 
-    WriteFont: (buffer, font, fontDir, callback) => {
-      fs.rename(path.join(fontDir, font.name + ext), buffer, callback)
-    },
-
-    writeDB: (writePbf, WriteFont, font, callback) => {
+    writeDB: (metadata, rename, callback) => {
       const newFont = {
-        fontname: font.name,
-        owner: newFont.owner,
-        familyName: font.metadata.family_name,
-        styleName: font.metadata.style_name,
-        coverages: fontscope([font.codepoints]).map(coverage => {
+        fontname: metadata.fontname,
+        owner: owner,
+        familyName: metadata.family_name,
+        styleName: metadata.style_name,
+        coverages: fontscope([metadata.points]).map(coverage => {
           return {
             language: coverage.name,
             code: coverage.id,
@@ -88,7 +88,7 @@ module.exports.create = function(req, res, next) {
       }, newFont, { upsert: true, new: true, setDefaultsOnInsert: true }, callback)
     }
   }, (err, results) => {
-    fs.unlink(filePath)
+    fs.unlink(filePath, () => {})
     if (err) return next(err)
 
     res.json(results.writeDB)
@@ -99,13 +99,13 @@ module.exports.create = function(req, res, next) {
 module.exports.delete = function(req, res, next) {
   const owner = req.params.owner
   const fontname = req.params.fontname
-  const fontDir = path.join('fonts', owner, fontname)
+  const fontPath = path.join('fonts', owner, fontname)
 
   Font.findOneAndRemove({owner, fontname}, (err, font) => {
     if (err) return next(err)
     if (!font) return res.sendStatus(404)
 
-    rimraf(fontDir, err => {
+    fs.unlink(fontPath, err => {
       if (err) return next(err)
 
       res.sendStatus(204)
@@ -116,13 +116,34 @@ module.exports.delete = function(req, res, next) {
 
 module.exports.getGlyphs = function(req, res, next) {
   const owner = req.params.owner
-  const fontnames = req.params.fontstack.split(',')
+  const fontnames = req.params.fontstack.split(',').map(fontname => fontname.trim())
+  const start = +req.params.start
+  const end = +req.params.end
 
+  async.autoInject({
+    fonts: callback => {
+      async.reduce(fontnames, [], (result, fontname, next) => {
+        const fontPath = path.join('fonts', owner, fontname)
+        fs.readFile(fontPath, (err, buffer) => {
+          if (!err) result.push(buffer)
+          next(null, result)
+        })
+      }, callback)
+    },
 
+    glyphs: (fonts, callback) => {
+      async.map(fonts, (font, next) => {
+        fontnik.range({font, start, end}, next)
+      }, callback)
+    },
 
-}
+    combine: (glyphs, callback) => {
+      callback(null, glyphPbfComposite.combine(glyphs))
+    }
+  }, (err, results) => {
+    if (err) return next(err)
 
-
-module.exports.getThumbnail = function(req, res, next) {
-
+    res.set('Content-Type', 'application/x-protobuf')
+    res.send(results.combine)
+  })
 }

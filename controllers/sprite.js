@@ -96,18 +96,17 @@ module.exports.createIcon = function(req, res, next) {
 
   if (path.extname(originalname).toLowerCase() !== '.svg') {
     fs.unlink(filePath)
-    return res.status(400).json(new Error('Only supports svg icons.'))
+    return res.status(400).json({message: 'Only supports svg icons.'})
   }
 
-  async.autoInject({
-    mkdir: callback => mkdirp(spriteDir, callback),
-
-    rename: (mkdir, callback) => fs.rename(filePath, iconPath, callback)
-  }, err => {
-    fs.unlink(filePath)
+  mkdirp(spriteDir, err => {
     if (err) return next(err)
 
-    res.sendStatus(204)
+    fs.rename(filePath, iconPath, err => {
+      if (err) return next(err)
+
+      res.sendStatus(204)
+    })
   })
 }
 

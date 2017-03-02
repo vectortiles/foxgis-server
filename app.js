@@ -34,10 +34,11 @@ app.use((req, res, next) => {
 })
 
 // error handler
-app.use((err, req, res) => {
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
   res.status(err.status || 500)
   res.json({
-    error: app.get('env') === 'development' ? err : '',
+    error: app.get('env') === 'development' ? err.stack.split('\n') : [],
     message: err.message
   })
 })
