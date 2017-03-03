@@ -58,8 +58,8 @@ module.exports.create = function(req, res, next) {
     },
 
     fontDir: (callback) => {
-      const fontDir = path.join('fonts', owner)
-      mkdirp(fontDir, err => callback(err, fontDir))
+      const dir = path.join('fonts', owner)
+      mkdirp(dir, err => callback(err, dir))
     },
 
     rename: (metadata, fontDir, callback) => {

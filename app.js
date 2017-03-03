@@ -8,7 +8,7 @@ const methodOverride = require('method-override')
 const cors = require('cors')
 const router = require('./router')
 
-// connect to db
+// Connect to db
 require('./db')
 
 const app = express()
@@ -26,14 +26,14 @@ app.use(express.static('public'))
 
 app.use('/api/v1', router)
 
-// catch 404 and forward to error handler
+// Catch 404 and forward to error handler
 app.use((req, res, next) => {
   const err = new Error('Not Found')
   err.status = 404
   next(err)
 })
 
-// error handler
+// Error handler
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   res.status(err.status || 500)

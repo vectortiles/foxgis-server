@@ -14,8 +14,8 @@ const upload = multer({
 // Tileset API
 router.get('/tilesets/:owner', tilesets.list)
 router.get('/tilesets/:owner/:tilesetId', tilesets.get)
-router.post('/tilesets/:owner', upload.any(), tilesets.create)
-router.put('/tilesets/:owner/:tilesetId', upload.any(), tilesets.replace)
+router.post('/tilesets/:owner/', upload.any(), tilesets.create)
+router.put('/tilesets/:owner/:tilesetId', upload.any(), tilesets.create)
 router.patch('/tilesets/:owner/:tilesetId', tilesets.update)
 router.delete('/tilesets/:owner/:tilesetId', tilesets.delete)
 router.get('/tilesets/:owner/:tilesetId/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)', tilesets.getTile)
