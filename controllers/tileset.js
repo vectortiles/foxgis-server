@@ -4,11 +4,15 @@ const url = require('url')
 const _ = require('lodash')
 const async = require('async')
 const mkdirp = require('mkdirp')
-const moment = require('moment')
 const mapboxFileSniff = require('@mapbox/mapbox-file-sniff')
 const shapefileFairy = require('@mapbox/shapefile-fairy')
 const tilelive = require('@mapbox/tilelive')
+const mbtiles = require('mbtiles')
+const tileliveOmnivore = require('@mapbox/tilelive-omnivore')
 const Tileset = require('../models/tileset')
+
+mbtiles.registerProtocols(tilelive)
+tileliveOmnivore.registerProtocols(tilelive)
 
 
 module.exports.list = function(req, res, next) {
@@ -38,9 +42,10 @@ module.exports.get = function(req, res, next) {
       const urlObject = url.parse(req.originalUrl)
       urlObject.protocol = req.protocol
       urlObject.host = req.get('host')
-      urlObject.path = urlObject.path + '/{z}/{x}/{y}.' + info.format
+      urlObject.path = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
       info.tiles = [url.format(urlObject)]
-      res.json(Object.assign(info, tileset))
+      info.scheme = 'xyz'
+      res.json(Object.assign(info, tileset.toJSON()))
     })
   })
 }
@@ -49,7 +54,8 @@ module.exports.get = function(req, res, next) {
 module.exports.create = function(req, res, next) {
   const owner = req.params.owner
   const tilesetId = req.params.tilesetId
-  const filePath = req.files[0].path
+  const filePath = path.resolve(req.files[0].path)
+  const originalname = req.files[0].originalname
 
   async.autoInject({
     tileset: callback => {
@@ -70,19 +76,18 @@ module.exports.create = function(req, res, next) {
       mapboxFileSniff.fromFile(filePath, callback)
     },
 
-    tilesetDir: callback => {
-      const dir = path.join('tilesets', owner)
-      mkdirp(dir, err => callback(err, dir))
-    },
-
     source: (fileinfo, callback) => {
-      if (fileinfo.type === 'zip') {
-        return callback(null, fileinfo.protocol + '//' + filePath)
+      if (fileinfo.protocol !== 'omnivore:' && fileinfo.protocol !== 'mbtiles:') {
+        return callback({status: 400, message: 'Unsupport file format.'})
       }
 
-      shapefileFairy(filePath, (err, path) => {
-        callback(err, fileinfo.protocol + '//' + path)
-      })
+      if (fileinfo.type === 'zip') {
+        return shapefileFairy(filePath, (err, path) => {
+          callback(err, fileinfo.protocol + '//' + path)
+        })
+      }
+
+      callback(null, fileinfo.protocol + '//' + filePath)
     },
 
     info: (source, callback) => {
@@ -90,29 +95,41 @@ module.exports.create = function(req, res, next) {
     },
 
     writeDB: (tileset, info, callback) => {
-      tileset.name = tileset.name || info.name
+      tileset.name = tileset.name || info.name || path.basename(originalname, path.extname(originalname))
       tileset.description = tileset.description || info.description
+      tileset.complete = false
+      tileset.progress = 0
+      tileset.err = undefined
       tileset.save((err, tileset) => callback(err, tileset))
-    },
-
-    copy: (tileset, tilesetDir, source, callback) => {
-      const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}`
-      const options = {
-        retry: 2,
-        timeout: 60000,
-        close: true,
-        progress: (stats, p) => {
-          process.stdout.write(`${tilesetId}: ${p.percentage}% | ${moment.duration(p.eta)}`)
-        }
-      }
-
-      tilelive.copy(source, dest, options, callback)
     }
   }, (err, results) => {
-    fs.unlink(filePath, () => {})
     if (err) return next(err)
 
     res.json(results.writeDB)
+
+    // Import Tiles
+    const tileset = results.writeDB
+    const source = results.source
+
+    const tilesetDir = path.join('tilesets', owner)
+    mkdirp(tilesetDir, err => {
+      if (err) return tileset.save()
+
+      const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}`
+      const options = {
+        retry: 2,
+        timeout: 120000,
+        close: true,
+        progress: _.throttle((stats, p) => {
+          tileset.update({progress: Math.round(p.percentage)})
+        })
+      }
+
+      tilelive.copy(source, dest, options, err => {
+        tileset.update({complete: true, error: err})
+        fs.unlink(filePath)
+      })
+    })
   })
 }
 

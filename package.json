@@ -13,6 +13,7 @@
   "dependencies": {
     "@mapbox/glyph-pbf-composite": "0.0.2",
     "@mapbox/mapbox-file-sniff": "^1.0.0",
+    "@mapbox/shapefile-fairy": "^0.4.0",
     "@mapbox/spritezero": "^4.0.1",
     "@mapbox/tilelive": "^5.12.3",
     "@mapbox/tilelive-omnivore": "^3.1.2",

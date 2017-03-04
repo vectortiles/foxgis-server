@@ -1,6 +1,6 @@
 const express = require('express')
 const multer = require('multer')
-const tilesets = require('./controllers/tilesets')
+const tilesets = require('./controllers/tileset')
 const fonts = require('./controllers/font')
 const sprites = require('./controllers/sprite')
 

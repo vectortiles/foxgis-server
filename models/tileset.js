@@ -7,7 +7,10 @@ const TilesetSchema = new mongoose.Schema({
   tilesetId: { type: String, default: shortid.generate },
   owner: String,
   name: String,
-  description: String
+  description: String,
+  complete: { type: Boolean, default: false},
+  progress: { type: Number, default: 0},
+  error: String
 }, { timestamps: true })
 
 TilesetSchema.plugin(select, '-_id -__v')
