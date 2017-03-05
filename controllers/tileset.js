@@ -94,42 +94,30 @@ module.exports.create = function(req, res, next) {
       tilelive.info(source, callback)
     },
 
+    tilesetDir: (callback) => {
+      const dir = path.join('tilesets', owner)
+      mkdirp(dir, err => callback(err, dir))
+    },
+
+    copy: (tileset, source, tilesetDir, callback) => {
+      const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}`
+      const options = {
+        retry: 2,
+        timeout: 120000
+      }
+
+      tilelive.copy(source, dest, options, callback)
+    },
+
     writeDB: (tileset, info, callback) => {
       tileset.name = tileset.name || info.name || path.basename(originalname, path.extname(originalname))
       tileset.description = tileset.description || info.description
-      tileset.complete = false
-      tileset.progress = 0
-      tileset.err = undefined
       tileset.save((err, tileset) => callback(err, tileset))
     }
   }, (err, results) => {
     if (err) return next(err)
 
     res.json(results.writeDB)
-
-    // Import Tiles
-    const tileset = results.writeDB
-    const source = results.source
-
-    const tilesetDir = path.join('tilesets', owner)
-    mkdirp(tilesetDir, err => {
-      if (err) return tileset.save()
-
-      const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}`
-      const options = {
-        retry: 2,
-        timeout: 120000,
-        close: true,
-        progress: _.throttle((stats, p) => {
-          tileset.update({progress: Math.round(p.percentage)})
-        })
-      }
-
-      tilelive.copy(source, dest, options, err => {
-        tileset.update({complete: true, error: err})
-        fs.unlink(filePath)
-      })
-    })
   })
 }
 
