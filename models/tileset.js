@@ -8,7 +8,7 @@ const TilesetSchema = new mongoose.Schema({
   owner: String,
   name: String,
   description: String,
-  complete: { type: Boolean, default: true},
+  complete: { type: Boolean, default: false},
   progress: { type: Number, default: 0},
   error: String
 }, { timestamps: true })

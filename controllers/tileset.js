@@ -110,7 +110,7 @@ module.exports.create = function(req, res, next) {
         timeout: 120000,
         close: true,
         progress: _.throttle((stats, p) => {
-          tileset.progress = p.percentage
+          tileset.progress = Math.round(p.percentage)
           tileset.save()
         }, 1000, { trailing: true })
       }
