@@ -18,7 +18,7 @@ tileliveOmnivore.registerProtocols(tilelive)
 module.exports.list = function(req, res, next) {
   const owner = req.params.owner
 
-  Tileset.find({owner}, (err, tilesets) => {
+  Tileset.find({ owner }, (err, tilesets) => {
     if (err) return next(err)
 
     res.json(tilesets)
@@ -31,7 +31,7 @@ module.exports.get = function(req, res, next) {
   const tilesetId = req.params.tilesetId
   const tilesetPath = path.join('tilesets', owner, tilesetId)
 
-  Tileset.findOne({owner, tilesetId}, (err, tileset) => {
+  Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
     if (err) return next(err)
     if (!tileset) return res.sendStatus(404)
 
@@ -42,7 +42,7 @@ module.exports.get = function(req, res, next) {
       const urlObject = url.parse(req.originalUrl)
       urlObject.protocol = req.protocol
       urlObject.host = req.get('host')
-      urlObject.path = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
+      urlObject.pathname = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
       info.tiles = [url.format(urlObject)]
       info.scheme = 'xyz'
       res.json(Object.assign(info, tileset.toJSON()))
@@ -54,19 +54,20 @@ module.exports.get = function(req, res, next) {
 module.exports.create = function(req, res, next) {
   const owner = req.params.owner
   const tilesetId = req.params.tilesetId
-  const filePath = path.resolve(req.files[0].path)
+  const filePath = req.files[0].path
   const originalname = req.files[0].originalname
 
   async.autoInject({
     tileset: callback => {
       if (!tilesetId) {
-        const tileset = new Tileset({owner})
+        const tileset = new Tileset({ owner })
         return tileset.save((err, tileset) => callback(err, tileset))
       }
 
-      Tileset.findOne({owner, tilesetId}, (err, tileset) => {
+      Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
         if (err) return callback(err)
-        if (!tileset) return callback({status: 404})
+        if (!tileset) return callback({ status: 404 })
+        if (!tileset.complete) return callback({ status: 400, message: 'Previous uploading has not completed yet.' })
 
         callback(null, tileset)
       })
@@ -78,7 +79,7 @@ module.exports.create = function(req, res, next) {
 
     source: (fileinfo, callback) => {
       if (fileinfo.protocol !== 'omnivore:' && fileinfo.protocol !== 'mbtiles:') {
-        return callback({status: 400, message: 'Unsupport file format.'})
+        return callback({ status: 400, message: 'Unsupport file format.' })
       }
 
       if (fileinfo.type === 'zip') {
@@ -87,7 +88,7 @@ module.exports.create = function(req, res, next) {
         })
       }
 
-      callback(null, fileinfo.protocol + '//' + filePath)
+      callback(null, fileinfo.protocol + '//' + path.resolve(filePath))
     },
 
     info: (source, callback) => {
@@ -100,22 +101,41 @@ module.exports.create = function(req, res, next) {
     },
 
     copy: (tileset, source, tilesetDir, callback) => {
+      // Early callback so that import tileset in the background
+      callback()
+
       const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}`
       const options = {
         retry: 2,
-        timeout: 120000
+        timeout: 120000,
+        close: true,
+        progress: _.throttle((stats, p) => {
+          tileset.progress = p.percentage
+          tileset.save()
+        }, 1000, { trailing: true })
       }
 
-      tilelive.copy(source, dest, options, callback)
+      tilelive.copy(source, dest, options, err => {
+        tileset.complete = true
+        tileset.error = err
+        tileset.save()
+        fs.unlink(filePath)
+      })
     },
 
     writeDB: (tileset, info, callback) => {
       tileset.name = tileset.name || info.name || path.basename(originalname, path.extname(originalname))
       tileset.description = tileset.description || info.description
+      tileset.complete = false
+      tileset.progress = 0
+      tileset.error = undefined
       tileset.save((err, tileset) => callback(err, tileset))
     }
   }, (err, results) => {
-    if (err) return next(err)
+    if (err) {
+      fs.unlink(filePath, () => {})
+      return next(err)
+    }
 
     res.json(results.writeDB)
   })
@@ -127,9 +147,9 @@ module.exports.update = function(req, res, next) {
   const tilesetId = req.params.tilesetId
   const update = _.pick(req.body, ['name', 'description'])
 
-  Tileset.findOneAndUpdate({owner, tilesetId}, update, {new: true}, (err, tileset) => {
+  Tileset.findOneAndUpdate({ owner, tilesetId }, update, { new: true }, (err, tileset) => {
     if (err) return next(err)
-    if (!tileset) res.sendStatus(404)
+    if (!tileset) return res.sendStatus(404)
 
     res.json(tileset)
   })
@@ -141,7 +161,7 @@ module.exports.delete = function(req, res, next) {
   const tilesetId = req.params.tilesetId
   const tilesetPath = path.join('tilesets', owner, tilesetId)
 
-  Tileset.findOneAndRemove({owner, tilesetId}, (err, tileset) => {
+  Tileset.findOneAndRemove({ owner, tilesetId }, (err, tileset) => {
     if (err) return next(err)
     if (!tileset) return res.sendStatus(404)
 
@@ -168,6 +188,7 @@ module.exports.getTile = function(req, res, next) {
 
     source.getTile(z, x, y, (err, data, headers) => {
       if (err) return next(err)
+      if (!data) return res.sendStatus(404)
 
       res.set(headers)
       res.send(data)

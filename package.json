@@ -2,6 +2,9 @@
   "name": "foxgis-server",
   "version": "1.0.0",
   "private": true,
+  "bin": {
+    "foxgis-server": "./bin/www"
+  },
   "scripts": {
     "start": "node ./bin/www",
     "lint": "eslint *.js",
@@ -31,7 +34,6 @@
     "mbtiles": "^0.9.0",
     "method-override": "^2.3.7",
     "mkdirp": "^0.5.1",
-    "moment": "^2.17.1",
     "mongoose": "^4.7.1",
     "mongoose-json-select": "^0.2.1",
     "morgan": "~1.7.0",
