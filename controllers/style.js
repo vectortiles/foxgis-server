@@ -1,4 +1,7 @@
 const _ = require('lodash')
+const mime = require('mime')
+const sharp = require('sharp')
+const mbgl = require('@mapbox/mapbox-gl-native')
 const Style = require('../models/style')
 
 
@@ -77,6 +80,37 @@ module.exports.getStatic = function(req, res, next) {
 
 }
 
+
 module.exports.getHtml = function(req, res, next) {
 
+}
+
+
+const render = function(style, options, callback) {
+  const mapOptions = {
+    request: (req, callback) => {
+      callback()
+    },
+
+    ratio: options.ratio
+  }
+
+  const map = new mbgl.Map(mapOptions)
+  map.load(style)
+  map.render(options, (err, buffer) => {
+    map.release()
+    if (err) return callback(err)
+
+    const image = sharp(buffer, {
+      raw: {
+        width: options.width * mapOptions.ratio,
+        height: options.width * mapOptions.ratio,
+        channels: 4
+      }
+    })
+
+    image.toFormat(options.format).toBuffer(function(err, buffer, info) {
+      return callback(err, buffer, { 'Content-Type': mime.lookup(info.format) })
+    })
+  })
 }
