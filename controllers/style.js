@@ -5,7 +5,7 @@ const sharp = require('sharp')
 const axios = require('axios')
 const mbgl = require('@mapbox/mapbox-gl-native')
 const SphericalMercator = require('@mapbox/sphericalmercator')
-const mbutil = require('mapbox/src/util/mapbox')
+const mbutil = require('./mapbox')
 const Style = require('../models/style')
 
 
@@ -110,7 +110,7 @@ module.exports.getTile = function(req, res, next) {
       res.type(info.format)
       res.send(buffer)
     })
-  }
+  })
 }
 
 
