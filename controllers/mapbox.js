@@ -62,26 +62,19 @@ exports.normalizeSpriteURL = function(url, format, extension, accessToken) {
     urlObject.path += `${format}${extension}`
     return formatUrl(urlObject)
   }
-  urlObject.path = `/styles/v1${urlObject.path}/sprite${format}${extension}`
+
+  urlObject.path = `/styles/v1${urlObject.path.replace(extension, '')}/sprite${format}${extension}`
   return makeAPIURL(urlObject, accessToken)
 }
 
 const imageExtensionRe = /(\.(png|jpg)\d*)(?=$)/
 
-exports.normalizeTileURL = function(tileURL, sourceURL, tileSize) {
-  if (!sourceURL || !isMapboxURL(sourceURL)) return tileURL
+exports.normalizeTileURL = function(url, accessToken) {
+  if (!isMapboxURL(url)) return url
 
-  const urlObject = parseUrl(tileURL)
-
-  // The v4 mapbox tile API supports 512x512 image tiles only when @2x
-  // is appended to the tile URL. If `tileSize: 512` is specified for
-  // a Mapbox raster source force the @2x suffix even if a non hidpi device.
-  // const suffix = browser.devicePixelRatio >= 2 || tileSize === 512 ? '@2x' : ''
-  // const extension = browser.supportsWebp ? '.webp' : '$1'
-  // urlObject.path = urlObject.path.replace(imageExtensionRe, `${suffix}${extension}`)
-
-  replaceTempAccessToken(urlObject.params)
-  return formatUrl(urlObject)
+  const urlObject = parseUrl(url)
+  urlObject.path = `/v4${urlObject.path}`
+  return makeAPIURL(urlObject, accessToken)
 }
 
 function replaceTempAccessToken(params) {

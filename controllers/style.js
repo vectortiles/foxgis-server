@@ -3,6 +3,7 @@ const url = require('url')
 const _ = require('lodash')
 const sharp = require('sharp')
 const axios = require('axios')
+const request = require('request')
 const mbgl = require('@mapbox/mapbox-gl-native')
 const SphericalMercator = require('@mapbox/sphericalmercator')
 const mbutil = require('./mapbox')
@@ -155,10 +156,10 @@ module.exports.getHtml = function(req, res, next) {
 
 function render(style, options, callback) {
   const accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2owMXpsMTlhMDNnbDJ3b2x2dGloZGV1aCJ9.mvM8UjjqsDRWolzvhjZoww'
-
+  console.log(options)
   const mapOptions = {
     request: (req, callback) => {
-      switch (req.king) {
+      switch (req.kind) {
         case mbgl.Resource.Style:
           req.url = mbutil.normalizeStyleURL(req.url, accessToken)
           break
@@ -172,16 +173,24 @@ function render(style, options, callback) {
           req.url = mbutil.normalizeGlyphsURL(req.url, accessToken)
           break
         case mbgl.Resource.SpriteImage:
-          req.url = mbutil.normalizeSpriteURL(req.url, `@${options.scale}x`, `.@${options.format}`, accessToken)
+          req.url = mbutil.normalizeSpriteURL(req.url, `@${options.scale}x`, '.png', accessToken)
           break
         case mbgl.Resource.SpriteJSON:
-          req.url = mbutil.normalizeSpriteURL(req.url, `@${options.scale}x`, `.@${options.format}`, accessToken)
+          req.url = mbutil.normalizeSpriteURL(req.url, `@${options.scale}x`, `.json`, accessToken)
           break
       }
 
-      axios.get(req.url)
-        .then(res => callback(null, res))
-        .catch(err => callback(err))
+      console.log(req)
+      // axios.get(req.url, {headers:{ 'Accept-Encoding': 'gzip, deflate'}})
+      //   .then(res => callback(null, res))
+      //   .catch(err => {console.log(err)
+      //     callback(err)
+      //   })
+      request.get({url: req.url, gzip: true, encoding: null}, (err, res, body) => {
+        if (err) console.log(err)
+        // console.log(res)
+        callback(err, {data: body})
+      })
     },
 
     ratio: options.scale

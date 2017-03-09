@@ -10,13 +10,13 @@ const StyleSchema = new mongoose.Schema({
   description: String,
   version: { type: Number, default: 8 },
   metadata: mongoose.Schema.Types.Mixed,
-  center: [Number],
+  center: { type: [Number], default: [0, 0] },
   zoom: Number,
   bearing: Number,
   pitch: Number,
   light: {
     anchor: String,
-    position: [Number],
+    position: { type: [Number], default: [1.15, 210, 30] },
     color: String,
     intensity: Number
   },
