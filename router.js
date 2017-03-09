@@ -19,7 +19,7 @@ router.post('/styles/:owner', styles.create)
 router.patch('/styles/:owner/:styleId', styles.update)
 router.delete('/styles/:owner/:styleId', styles.delete)
 router.get('/styles/:owner/:styleId/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@[1-4]x)?\.:format([\\w\\.]+)', styles.getTile)
-router.get('/styles/:owner/:styleId/static', styles.getStatic)
+router.get('/styles/:owner/:styleId/static/:lon,:lat,:zoom,:bearing?,:pitch?/:width(\\d+)x:height(\\d+):scale(@[1-4]x)?.:format([\\w\\.]+)?', styles.getStatic)
 router.get('/styles/:owner/:styleId/html', styles.getHtml)
 
 // Tileset API

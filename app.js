@@ -14,6 +14,10 @@ require('./db')
 const app = express()
 app.set('json spaces', 2)
 
+// view engine setup
+app.set('views', path.join(__dirname, 'views'))
+app.set('view engine', 'hbs')
+
 app.use(compression())
 app.use(helmet())
 app.use(cors())
