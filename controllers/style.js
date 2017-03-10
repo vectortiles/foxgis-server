@@ -2,7 +2,6 @@ const path = require('path')
 const url = require('url')
 const _ = require('lodash')
 const sharp = require('sharp')
-const axios = require('axios')
 const request = require('request')
 const mbgl = require('@mapbox/mapbox-gl-native')
 const SphericalMercator = require('@mapbox/sphericalmercator')
@@ -100,7 +99,6 @@ module.exports.getTile = function(req, res, next) {
     scale: scale
   }
 
-
   Style.findOne({ owner, styleId }, (err, style) => {
     if (err) return next(err)
     if (!style) return res.sendStatus(404)
@@ -156,7 +154,7 @@ module.exports.getHtml = function(req, res, next) {
 
 function render(style, options, callback) {
   const accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2owMXpsMTlhMDNnbDJ3b2x2dGloZGV1aCJ9.mvM8UjjqsDRWolzvhjZoww'
-  console.log(options)
+
   const mapOptions = {
     request: (req, callback) => {
       switch (req.kind) {
@@ -180,16 +178,8 @@ function render(style, options, callback) {
           break
       }
 
-      console.log(req)
-      // axios.get(req.url, {headers:{ 'Accept-Encoding': 'gzip, deflate'}})
-      //   .then(res => callback(null, res))
-      //   .catch(err => {console.log(err)
-      //     callback(err)
-      //   })
-      request.get({url: req.url, gzip: true, encoding: null}, (err, res, body) => {
-        if (err) console.log(err)
-        // console.log(res)
-        callback(err, {data: body})
+      request.get(req.url, { gzip: true, encoding: null }, (err, res, body) => {
+        callback(err, { data: body })
       })
     },
 

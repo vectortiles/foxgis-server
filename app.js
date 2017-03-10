@@ -9,13 +9,14 @@ const methodOverride = require('method-override')
 const cors = require('cors')
 const router = require('./router')
 
+
 // Connect to db
 require('./db')
 
 const app = express()
 app.set('json spaces', 2)
 
-// view engine setup
+// // view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 
