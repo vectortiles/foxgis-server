@@ -85,18 +85,18 @@ module.exports.getTile = function(req, res, next) {
   const format = req.params.format || 'png'
   const tileSize = +req.query.tileSize || 512
 
-  const sm = new SphericalMercator({ size: tileSize })
-  const center = sm.ll([x * tileSize + tileSize / 2, y * tileSize + tileSize / 2], z)
+  const sm = new SphericalMercator({ size: 512 })
+  const center = sm.ll([x * 512 + 256, y * 512 + 256], z)
 
   const options = {
     zoom: z,
-    width: tileSize,
-    height: tileSize,
+    width: 512,
+    height: 512,
     center: center,
     bearing: 0,
     pitch: 0,
     format: format,
-    scale: scale
+    scale: scale * tileSize / 512
   }
 
   Style.findOne({ owner, styleId }, (err, style) => {
@@ -165,16 +165,16 @@ function render(style, options, callback) {
           req.url = mbutil.normalizeSourceURL(req.url, accessToken)
           break
         case mbgl.Resource.Tile:
-          req.url = mbutil.normalizeTileURL(req.url)
+          req.url = mbutil.normalizeTileURL(req.url, accessToken)
           break
         case mbgl.Resource.Glyphs:
           req.url = mbutil.normalizeGlyphsURL(req.url, accessToken)
           break
         case mbgl.Resource.SpriteImage:
-          req.url = mbutil.normalizeSpriteURL(req.url, `@${options.scale}x`, '.png', accessToken)
+          req.url = mbutil.normalizeSpriteURL(req.url, accessToken)
           break
         case mbgl.Resource.SpriteJSON:
-          req.url = mbutil.normalizeSpriteURL(req.url, `@${options.scale}x`, `.json`, accessToken)
+          req.url = mbutil.normalizeSpriteURL(req.url, accessToken)
           break
       }
 
@@ -194,8 +194,8 @@ function render(style, options, callback) {
 
     const image = sharp(buffer, {
       raw: {
-        width: options.width * mapOptions.ratio,
-        height: options.width * mapOptions.ratio,
+        width: Math.round(options.width * mapOptions.ratio),
+        height: Math.round(options.width * mapOptions.ratio),
         channels: 4
       }
     })
