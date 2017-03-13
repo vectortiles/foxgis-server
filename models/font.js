@@ -4,7 +4,7 @@ const select = require('mongoose-json-select')
 
 const FontSchema = new mongoose.Schema({
   fontname: String,
-  owner: String,
+  owner: { type: String, required: true },
   familyName: String,
   styleName: String,
   coverages: [{

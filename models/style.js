@@ -5,7 +5,7 @@ const shortid = require('shortid')
 
 const StyleSchema = new mongoose.Schema({
   styleId: { type: String, default: shortid.generate },
-  owner: String,
+  owner: { type: String, required: true },
   name: String,
   description: String,
   version: { type: Number, default: 8 },
@@ -33,7 +33,7 @@ const StyleSchema = new mongoose.Schema({
 StyleSchema.plugin(select, '-_id -__v')
 
 StyleSchema.index({ owner: 1 })
-StyleSchema.index({ owner: 1, tilesetId: 1 }, { unique: true })
+StyleSchema.index({ owner: 1, styleId: 1 }, { unique: true })
 
 
 module.exports = mongoose.model('Style', StyleSchema)

@@ -9,5 +9,3 @@ RUN apt-get update -qq \
 
 VOLUME /data
 WORKDIR /data
-
-

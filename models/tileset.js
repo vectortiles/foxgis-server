@@ -5,7 +5,7 @@ const shortid = require('shortid')
 
 const TilesetSchema = new mongoose.Schema({
   tilesetId: { type: String, default: shortid.generate },
-  owner: String,
+  owner: { type: String, required: true },
   name: String,
   description: String,
   complete: { type: Boolean, default: false},
