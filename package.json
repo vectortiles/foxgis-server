@@ -45,7 +45,8 @@
     "request": "^2.80.0",
     "rimraf": "^2.6.1",
     "sharp": "^0.17.2",
-    "shortid": "^2.2.6"
+    "shortid": "^2.2.6",
+    "tilelive-merge": "^1.0.3"
   },
   "devDependencies": {
     "eslint": "^3.17.1"

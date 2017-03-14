@@ -7,12 +7,15 @@ const mkdirp = require('mkdirp')
 const mapboxFileSniff = require('@mapbox/mapbox-file-sniff')
 const shapefileFairy = require('@mapbox/shapefile-fairy')
 const tilelive = require('@mapbox/tilelive')
+const omnivore = require('@mapbox/tilelive-omnivore')
 const mbtiles = require('mbtiles')
-const tileliveOmnivore = require('@mapbox/tilelive-omnivore')
+const merge = require('tilelive-merge')
 const Tileset = require('../models/tileset')
 
+
+omnivore.registerProtocols(tilelive)
 mbtiles.registerProtocols(tilelive)
-tileliveOmnivore.registerProtocols(tilelive)
+merge.registerProtocols(tilelive)
 
 
 module.exports.list = function(req, res, next) {
@@ -28,15 +31,26 @@ module.exports.list = function(req, res, next) {
 
 module.exports.get = function(req, res, next) {
   const owner = req.params.owner
-  const tilesetId = req.params.tilesetId
+  const tilesetIds = req.params.tilesetIds.split(',').map(id => id.trim())
   const tilesetPath = path.join('tilesets', owner, tilesetId)
 
-  Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
-    if (err) return next(err)
-    if (!tileset) return res.sendStatus(404)
+  const source = {
+    protocol: "merge:",
+    query: {
+      sources: tilesetIds.map(tilesetId => 'mbtiles://' + path.resolve('tilesets', owner, tilesetId))
+    }
+  }
 
-    const source = 'mbtiles://' + path.resolve(tilesetPath)
-    tilelive.info(source, (err, info) => {
+  async.reduce(tilesetIds, [], (tilesets, tilesetId, callback) => {
+    Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
+      if (!err) tilesets.push(tileset)
+      callback(null, tilesets)
+    })
+  }, (err, tilesets) => {
+    if (err) return next(err)
+    if (!tilesets.length) return res.sendStatus(404)
+
+    tilelive.getInfo(source, (err, info) => {
       if (err) return next(err)
 
       const urlObject = url.parse(req.originalUrl)
@@ -45,7 +59,11 @@ module.exports.get = function(req, res, next) {
       urlObject.pathname = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
       info.tiles = [url.format(urlObject)]
       info.scheme = 'xyz'
-      res.json(Object.assign(info, tileset.toJSON()))
+      info.tilesetId = tilesets.map(tileset => tileset.tilesetId).join(',')
+      info.name = tilesets.map(tileset => tileset.name).join(',')
+      info.description = tilesets.map(tileset => tileset.description).join(',')
+
+      res.json(info)
     })
   })
 }
@@ -176,18 +194,22 @@ module.exports.delete = function(req, res, next) {
 
 module.exports.getTile = function(req, res, next) {
   const owner = req.params.owner
-  const tilesetId = req.params.tilesetId
+  const tilesetIds = req.params.tilesetIds.split(',').map(id => id.trim())
   const z = +req.params.z || 0
   const x = +req.params.x || 0
   const y = +req.params.y || 0
 
-  const tilesetPath = path.join('tilesets', owner, tilesetId)
-  const source = 'mbtiles://' + path.resolve(tilesetPath)
+  const source = {
+    protocol: "merge:",
+    query: {
+      sources: tilesetIds.map(tilesetId => 'mbtiles://' + path.resolve('tilesets', owner, tilesetId))
+    }
+  }
+
   tilelive.load(source, (err, source) => {
     if (err) return next(err)
 
     source.getTile(z, x, y, (err, data, headers) => {
-      source.close()
       if (err) return next(err)
       if (!data) return res.sendStatus(404)
 
