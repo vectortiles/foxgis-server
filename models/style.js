@@ -6,7 +6,7 @@ const shortid = require('shortid')
 const StyleSchema = new mongoose.Schema({
   styleId: { type: String, default: shortid.generate },
   owner: { type: String, required: true },
-  name: String,
+  name: { type: String, default: 'Style' },
   description: String,
   version: { type: Number, default: 8 },
   metadata: mongoose.Schema.Types.Mixed,

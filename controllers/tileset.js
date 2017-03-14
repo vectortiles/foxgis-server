@@ -187,6 +187,7 @@ module.exports.getTile = function(req, res, next) {
     if (err) return next(err)
 
     source.getTile(z, x, y, (err, data, headers) => {
+      source.close()
       if (err) return next(err)
       if (!data) return res.sendStatus(404)
 

@@ -39,7 +39,8 @@ module.exports.normalizeSourceURL = function(url, accessToken) {
   const urlObject = URL.parse(url, true, true)
   if (urlObject.protocol !== 'mapbox:') return url
 
-  urlObject.pathname = '/v4/' + urlObject.hostname + '.json'
+  urlObject.pathname = urlObject.pathname ? urlObject.pathname.slice(1) : ''
+  urlObject.pathname = '/v4/' + urlObject.hostname + urlObject.pathname + '.json'
   urlObject.query.secure = true
 
   return makeAPIURL(urlObject, accessToken)
