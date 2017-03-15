@@ -15,10 +15,12 @@ const upload = multer({
 })
 
 // User API
-// router.get('/users/:username', users.get)
-// router.post('/users', users.create)
-// router.patch('/users/:username', users.update)
-// router.delete('/users/:username', users.delete)
+router.get('/users/:username', users.get)
+router.post('/users', users.create)
+router.patch('/users/:username', users.update)
+router.delete('/users/:username', users.delete)
+router.get('/users/:username/avatar', users.getAvatar)
+router.put('/users/:username/avatar', upload.any(), users.updateAvatar)
 
 // Token API
 // router.get('/tokens/:owner', tokens.list)

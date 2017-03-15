@@ -17,7 +17,6 @@ omnivore.registerProtocols(tilelive)
 mbtiles.registerProtocols(tilelive)
 merge.registerProtocols(tilelive)
 
-
 module.exports.list = function(req, res, next) {
   const owner = req.params.owner
 
