@@ -1,7 +1,7 @@
 const express = require('express')
 const multer = require('multer')
-// const users = require('./controllers/user')
-// const tokens = require('./controllers/token')
+const users = require('./controllers/user')
+const tokens = require('./controllers/token')
 const styles = require('./controllers/style')
 const tilesets = require('./controllers/tileset')
 const fonts = require('./controllers/font')
@@ -23,11 +23,10 @@ router.get('/users/:username/avatar', users.getAvatar)
 router.put('/users/:username/avatar', upload.any(), users.updateAvatar)
 
 // Token API
-// router.get('/tokens/:owner', tokens.list)
-// router.get('/tokens/:owner/:tokenId', tokens.get)
-// router.post('/tokens/:owner', tokens.create)
-// router.get('/tokens/:owner/:tokenId', tokens.update)
-// router.get('/tokens/:owner/:tokenId', tokens.delete)
+router.get('/tokens/:owner', tokens.list)
+router.post('/tokens/:owner', tokens.create)
+router.patch('/tokens/:owner/:tokenId', tokens.update)
+router.get('/tokens/:owner/:tokenId', tokens.delete)
 
 // Style API
 router.get('/styles/:owner', styles.list)

@@ -7,15 +7,11 @@ const mkdirp = require('mkdirp')
 const mapboxFileSniff = require('@mapbox/mapbox-file-sniff')
 const shapefileFairy = require('@mapbox/shapefile-fairy')
 const tilelive = require('@mapbox/tilelive')
-const omnivore = require('@mapbox/tilelive-omnivore')
-const mbtiles = require('mbtiles')
-const merge = require('tilelive-merge')
+const tileliveLoader = require('tilelive-modules/loader')
 const Tileset = require('../models/tileset')
 
 
-omnivore.registerProtocols(tilelive)
-mbtiles.registerProtocols(tilelive)
-merge.registerProtocols(tilelive)
+tileliveLoader(tilelive)
 
 module.exports.list = function(req, res, next) {
   const owner = req.params.owner

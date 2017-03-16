@@ -20,7 +20,7 @@ UserSchema.plugin(select, '-_id -__v -salt -hash -avatar')
 UserSchema.index({ username: 1 }, { unique: true })
 
 UserSchema.virtual('password').set(function(password) {
-  this.salt = crypto.randomBytes(16).toString('hex')
+  this.salt = crypto.randomBytes(64).toString('hex')
   this.hash = crypto.pbkdf2Sync(password, this.salt, 10000, 64, 'sha512').toString('hex')
 })
 
