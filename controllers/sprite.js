@@ -12,7 +12,7 @@ const Sprite = require('../models/sprite')
 module.exports.list = function(req, res, next) {
   const owner = req.params.owner
 
-  Sprite.find({owner}, (err, sprites) => {
+  Sprite.find({ owner }, (err, sprites) => {
     if (err) return next(err)
 
     res.json(sprites)
@@ -24,7 +24,7 @@ module.exports.get = function(req, res, next) {
   const owner = req.params.owner
   const spriteId = req.params.spriteId
 
-  Sprite.findOne({owner, spriteId}, (err, sprite) => {
+  Sprite.findOne({ owner, spriteId }, (err, sprite) => {
     if (err) return next(err)
     if (!sprite) return res.sendStatus(404)
 
@@ -38,7 +38,7 @@ module.exports.create = function(req, res, next) {
   const name = req.body.name
   const description = req.body.description
 
-  const sprite = new Sprite({owner, name, description})
+  const sprite = new Sprite({ owner, name, description })
   sprite.save((err, sprite) => {
     if (err) return next(err)
 
@@ -57,7 +57,7 @@ module.exports.update = function(req, res, next) {
   const spriteId = req.params.spriteId
   const update = _.pick(req.body, ['name', 'description'])
 
-  Sprite.findOneAndUpdate({owner, spriteId}, update, {new: true}, (err, sprite) => {
+  Sprite.findOneAndUpdate({ owner, spriteId }, update, { new: true }, (err, sprite) => {
     if (err) return next(err)
     if (!sprite) res.sendStatus(404)
 
@@ -71,7 +71,7 @@ module.exports.delete = function(req, res, next) {
   const spriteId = req.params.spriteId
   const spriteDir = path.join('sprites', owner, spriteId)
 
-  Sprite.findOneAndRemove({owner, spriteId}, (err, sprite) => {
+  Sprite.findOneAndRemove({ owner, spriteId }, (err, sprite) => {
     if (err) return next(err)
     if (!sprite) return res.sendStatus(404)
 
@@ -96,7 +96,7 @@ module.exports.createIcon = function(req, res, next) {
 
   if (path.extname(originalname).toLowerCase() !== '.svg') {
     fs.unlink(filePath)
-    return res.status(400).json({message: 'Only supports svg icons.'})
+    return next({ status: 400, message: 'Only supports svg icons.' })
   }
 
   mkdirp(spriteDir, err => {

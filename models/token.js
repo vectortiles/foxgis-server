@@ -19,4 +19,4 @@ TokenSchema.index({ owner: 1 })
 TokenSchema.index({ owner: 1, tokenId: 1 }, { unique: true })
 
 
-module.exports = mongoose.model('Tileset', TokenSchema)
+module.exports = mongoose.model('Token', TokenSchema)

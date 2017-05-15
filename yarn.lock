@@ -2,37 +2,41 @@
 # yarn lockfile v1
 
 
+"@mapbox/detect-geocsv@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/detect-geocsv/-/detect-geocsv-0.1.0.tgz#dca1dcd190054a70e11e5885c78b6fb32e61bda0"
+
 "@mapbox/glyph-pbf-composite@^0.0.3":
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/@mapbox/glyph-pbf-composite/-/glyph-pbf-composite-0.0.3.tgz#18966c54737abcfca40408352728bed24a0b3e12"
   dependencies:
     protocol-buffers "^2.4.7"
 
-"@mapbox/mapbox-file-sniff@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-file-sniff/-/mapbox-file-sniff-1.0.0.tgz#14fe8ab3dc391b521a9bfb9ce42e258852f1be03"
+"@mapbox/mapbox-file-sniff@^1.0.1", "@mapbox/mapbox-file-sniff@~1.0.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapbox-file-sniff/-/mapbox-file-sniff-1.0.1.tgz#5cca646a89f0a3874a600d3b0832ca38e69398da"
   dependencies:
+    "@mapbox/detect-geocsv" "0.1.0"
     buffer "^3.2.2"
-    detect-geocsv "0.1.0"
     semver "~5.3.0"
     yargs "^6.5.0"
 
-"@mapbox/mapbox-gl-native@^3.4.4":
+"@mapbox/mapbox-gl-native@3.4.4":
   version "3.4.4"
   resolved "https://registry.yarnpkg.com/@mapbox/mapbox-gl-native/-/mapbox-gl-native-3.4.4.tgz#68f89f0dd77e97066cbfab534ced85a4d564132b"
   dependencies:
     nan "^2.4.0"
     node-pre-gyp "^0.6.28"
 
-"@mapbox/mapnik-omnivore@~8.2.2":
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/@mapbox/mapnik-omnivore/-/mapnik-omnivore-8.2.2.tgz#6f4af644288cb0016fe652261980fa794e41afb4"
+"@mapbox/mapnik-omnivore@~8.4.0":
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/mapnik-omnivore/-/mapnik-omnivore-8.4.0.tgz#39f9a94b01fba05952c841c867c7d8c3086b595c"
   dependencies:
+    "@mapbox/mapbox-file-sniff" "~1.0.0"
+    "@mapbox/sphericalmercator" "~1.0.5"
     gdal "~0.9.3"
-    mapbox-file-sniff "~0.5.2"
-    mapnik "~3.5.14"
+    mapnik "~3.6.0"
     queue-async "~1.2.0"
-    sphericalmercator "~1.0.2"
     srs "~1.2.0"
 
 "@mapbox/shapefile-fairy@^0.4.0":
@@ -48,45 +52,45 @@
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/@mapbox/shelf-pack/-/shelf-pack-3.0.0.tgz#44e284c8336eeda1e9dbbb1d61954c70e26e5766"
 
-"@mapbox/sphericalmercator@^1.0.5":
+"@mapbox/sphericalmercator@^1.0.5", "@mapbox/sphericalmercator@~1.0.1", "@mapbox/sphericalmercator@~1.0.5":
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/@mapbox/sphericalmercator/-/sphericalmercator-1.0.5.tgz#70237b9774095ed1cfdbcea7a8fd1fc82b2691f2"
 
-"@mapbox/spritezero@^4.0.1":
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/@mapbox/spritezero/-/spritezero-4.0.1.tgz#04b66d4a6e5f07a650a5cde92b3cb849572fd6e2"
+"@mapbox/spritezero@^4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/spritezero/-/spritezero-4.1.0.tgz#f130da828173545dc55e8df53d2ff85cb0441465"
   dependencies:
     "@mapbox/shelf-pack" "~3.0.0"
     json-stable-stringify "^1.0.1"
-    mapnik "3.5.14"
+    mapnik "~3.6.0"
     queue-async "^1.2.1"
     xtend "^4.0.1"
 
-"@mapbox/tilelive-bridge@~2.3.1":
-  version "2.3.1"
-  resolved "https://registry.yarnpkg.com/@mapbox/tilelive-bridge/-/tilelive-bridge-2.3.1.tgz#8f99c77e58c8cc50a1ba8790e61a220ee63a8f11"
+"@mapbox/tilelive-bridge@~2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/tilelive-bridge/-/tilelive-bridge-2.4.0.tgz#8ed25af789dac7d742137863db09011b3652b1c9"
   dependencies:
-    mapnik "~3.5.0"
+    "@mapbox/sphericalmercator" "~1.0.1"
+    mapnik "~3.6.0"
     mapnik-pool "~0.1.3"
-    sphericalmercator "1.0.x"
 
-"@mapbox/tilelive-omnivore@^3.1.2":
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/@mapbox/tilelive-omnivore/-/tilelive-omnivore-3.1.2.tgz#f6e9d60a78c7eab354c6a8ab7f61e9706a3c3690"
+"@mapbox/tilelive-omnivore@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@mapbox/tilelive-omnivore/-/tilelive-omnivore-3.3.0.tgz#1a3f067952344f6780b304f2cefd2d0253f39871"
   dependencies:
-    "@mapbox/mapnik-omnivore" "~8.2.2"
-    "@mapbox/tilelive-bridge" "~2.3.1"
+    "@mapbox/mapnik-omnivore" "~8.4.0"
+    "@mapbox/tilelive-bridge" "~2.4.0"
     queue-async "^1.0.7"
     underscore "^1.7.0"
 
-"@mapbox/tilelive@^5.12.3":
-  version "5.12.3"
-  resolved "https://registry.yarnpkg.com/@mapbox/tilelive/-/tilelive-5.12.3.tgz#18eb2fd38af24a01f1a508cd54777aefdeb57387"
+"@mapbox/tilelive@^5.12.6":
+  version "5.12.6"
+  resolved "https://registry.yarnpkg.com/@mapbox/tilelive/-/tilelive-5.12.6.tgz#00b3efe0b999e8307bc1cc099cb770da7676690b"
   dependencies:
+    "@mapbox/sphericalmercator" "~1.0.1"
     minimist "~0.2.0"
     progress-stream "~0.5.x"
     queue-async "~1.0.7"
-    sphericalmercator "~1.0.1"
 
 abbrev@1:
   version "1.1.0"
@@ -213,9 +217,9 @@ async@^1.4.0:
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/async/-/async-1.5.2.tgz#ec6a61ae56480c0c3cb241c95618e20892f9672a"
 
-async@^2.1.5:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/async/-/async-2.1.5.tgz#e587c68580994ac67fc56ff86d3ac56bdbe810bc"
+async@^2.4.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-2.4.0.tgz#4990200f18ea5b837c2cc4f8c031a6985c385611"
   dependencies:
     lodash "^4.14.0"
 
@@ -307,7 +311,7 @@ buffer-equal-constant-time@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/buffer-equal-constant-time/-/buffer-equal-constant-time-1.0.1.tgz#f8e71132f7ffe6e01a5c9697a4c6f3e48d5cc819"
 
-buffer-shims@^1.0.0:
+buffer-shims@^1.0.0, buffer-shims@~1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/buffer-shims/-/buffer-shims-1.0.0.tgz#9978ce317388c649ad8793028c3477ef044a8b51"
 
@@ -485,7 +489,7 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
 
-concat-stream@^1.4.6, concat-stream@^1.5.0:
+concat-stream@^1.5.0, concat-stream@^1.5.2:
   version "1.6.0"
   resolved "https://registry.yarnpkg.com/concat-stream/-/concat-stream-1.6.0.tgz#0aac662fd52be78964d5532f694784e70110acf7"
   dependencies:
@@ -539,10 +543,11 @@ core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.2.tgz#b5fd54220aa2bc5ab57aab7140c940754503c1a7"
 
-cors@^2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.1.tgz#6181aa56abb45a2825be3304703747ae4e9d2383"
+cors@^2.8.3:
+  version "2.8.3"
+  resolved "https://registry.yarnpkg.com/cors/-/cors-2.8.3.tgz#4cf78e1d23329a7496b2fc2225b77ca5bb5eb802"
   dependencies:
+    object-assign "^4"
     vary "^1"
 
 create-error-class@^3.0.0:
@@ -587,23 +592,23 @@ debug@2.2.0, debug@~2.2.0:
   dependencies:
     ms "0.7.1"
 
-debug@2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/debug/-/debug-2.3.3.tgz#40c453e67e6e13c901ddec317af8986cda9eff8c"
-  dependencies:
-    ms "0.7.2"
-
 debug@2.6.1:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.1.tgz#79855090ba2c4e3115cc7d8769491d58f0491351"
   dependencies:
     ms "0.7.2"
 
-debug@^2.1.1, debug@^2.6.1:
+debug@2.6.3:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.3.tgz#0f7eb8c30965ec08c72accfa0130c8b79984141d"
   dependencies:
     ms "0.7.2"
+
+debug@^2.1.1, debug@^2.6.6:
+  version "2.6.6"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.6.tgz#a9fa6fbe9ca43cf1e79f73b75c0189cbb7d6db5a"
+  dependencies:
+    ms "0.7.3"
 
 decamelize@^1.0.0, decamelize@^1.1.1:
   version "1.2.0"
@@ -645,10 +650,6 @@ destroy@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.0.4.tgz#978857442c44749e4206613e37946205826abd80"
 
-detect-geocsv@0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/detect-geocsv/-/detect-geocsv-0.1.0.tgz#8d24dcce93901e24405f6c8b7979b42841432634"
-
 dicer@0.2.5:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/dicer/-/dicer-0.2.5.tgz#5996c086bb33218c812c090bddc09cd12facb70f"
@@ -660,9 +661,9 @@ dns-prefetch-control@0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/dns-prefetch-control/-/dns-prefetch-control-0.1.0.tgz#60ddb457774e178f1f9415f0cabb0e85b0b300b2"
 
-doctrine@^1.2.2:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-1.5.0.tgz#379dce730f6166f76cefa4e6707a159b02c5a6fa"
+doctrine@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.0.0.tgz#c73d8d2909d22291e1a007a395804da8b665fe63"
   dependencies:
     esutils "^2.0.2"
     isarray "^1.0.0"
@@ -775,17 +776,18 @@ escope@^3.6.0:
     esrecurse "^4.1.0"
     estraverse "^4.1.1"
 
-eslint@^3.17.1:
-  version "3.17.1"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.17.1.tgz#b80ae12d9c406d858406fccda627afce33ea10ea"
+eslint@^3.19.0:
+  version "3.19.0"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.19.0.tgz#c8fc6201c7f40dd08941b87c085767386a679acc"
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
-    concat-stream "^1.4.6"
+    concat-stream "^1.5.2"
     debug "^2.1.1"
-    doctrine "^1.2.2"
+    doctrine "^2.0.0"
     escope "^3.6.0"
     espree "^3.4.0"
+    esquery "^1.0.0"
     estraverse "^4.2.0"
     esutils "^2.0.2"
     file-entry-cache "^2.0.0"
@@ -825,6 +827,12 @@ esprima@^3.1.1:
   version "3.1.3"
   resolved "https://registry.yarnpkg.com/esprima/-/esprima-3.1.3.tgz#fdca51cee6133895e3c88d535ce49dbff62a4633"
 
+esquery@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/esquery/-/esquery-1.0.0.tgz#cfba8b57d7fba93f17298a8a006a04cda13d80fa"
+  dependencies:
+    estraverse "^4.0.0"
+
 esrecurse@^4.1.0:
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/esrecurse/-/esrecurse-4.1.0.tgz#4713b6536adf7f2ac4f327d559e7756bff648220"
@@ -832,7 +840,7 @@ esrecurse@^4.1.0:
     estraverse "~4.1.0"
     object-assign "^4.0.1"
 
-estraverse@^4.1.1, estraverse@^4.2.0:
+estraverse@^4.0.0, estraverse@^4.1.1, estraverse@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/estraverse/-/estraverse-4.2.0.tgz#0dee3fed31fcd469618ce7342099fc1afa0bdb13"
 
@@ -858,6 +866,10 @@ event-emitter@~0.3.4:
 exit-hook@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/exit-hook/-/exit-hook-1.1.1.tgz#f05ca233b48c05d54fff07765df8507e95c02ff8"
+
+expect-ct@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/expect-ct/-/expect-ct-0.1.0.tgz#52735678de18530890d8d7b95f0ac63640958094"
 
 express@^4.15.2:
   version "4.15.2"
@@ -1168,13 +1180,14 @@ helmet-csp@2.4.0:
     lodash.reduce "4.6.0"
     platform "1.3.3"
 
-helmet@^3.1.0:
-  version "3.5.0"
-  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.5.0.tgz#e1d6de27d2e3317d3182e00d672df3d0e1e12539"
+helmet@^3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/helmet/-/helmet-3.6.0.tgz#cf391ecdba9c8a8ee7aec66cff4f147797e204d3"
   dependencies:
     connect "3.6.0"
     dns-prefetch-control "0.1.0"
     dont-sniff-mimetype "1.0.0"
+    expect-ct "0.1.0"
     frameguard "3.0.0"
     helmet-csp "2.4.0"
     hide-powered-by "1.0.0"
@@ -1444,9 +1457,9 @@ jsonpointer@^4.0.0:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/jsonpointer/-/jsonpointer-4.0.1.tgz#4fd92cb34e0e9db3c89c8622ecf51f9b978c6cb9"
 
-jsonwebtoken@^7.3.0:
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-7.3.0.tgz#85118d6a70e3fccdf14389f4e7a1c3f9c8a9fbba"
+jsonwebtoken@^7.4.0:
+  version "7.4.0"
+  resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-7.4.0.tgz#515bf2bba070ec615bad97fd2e945027eb476946"
   dependencies:
     joi "^6.10.1"
     jws "^3.1.4"
@@ -1480,9 +1493,9 @@ jws@^3.1.4:
     jwa "^1.1.4"
     safe-buffer "^5.0.1"
 
-kareem@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/kareem/-/kareem-1.2.1.tgz#acdb8c8119845834abbfa58ade1cf9dea63dc752"
+kareem@1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/kareem/-/kareem-1.4.1.tgz#ed76200044fa041ef32b4da8261e2553f1173531"
 
 kind-of@^3.0.2:
   version "3.1.0"
@@ -1590,14 +1603,6 @@ lowercase-keys@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/lowercase-keys/-/lowercase-keys-1.0.0.tgz#4e3366b39e7f5457e35f1324bdf6f88d0bfc7306"
 
-mapbox-file-sniff@~0.5.2:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/mapbox-file-sniff/-/mapbox-file-sniff-0.5.3.tgz#3ab18cdf6a2244306f94dbcd83c4d032520e87e4"
-  dependencies:
-    buffer "^3.2.2"
-    detect-geocsv "0.1.0"
-    semver "~5.3.0"
-
 mapnik-pool@~0.1.3:
   version "0.1.3"
   resolved "https://registry.yarnpkg.com/mapnik-pool/-/mapnik-pool-0.1.3.tgz#9bdad1cb34d87a19bc78ecb4cbfbaa203b2f3f2b"
@@ -1605,18 +1610,18 @@ mapnik-pool@~0.1.3:
     generic-pool "~2.2.1"
     xtend "~4.0.0"
 
-mapnik-vector-tile@~1.2.2:
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/mapnik-vector-tile/-/mapnik-vector-tile-1.2.2.tgz#42795ca211dd274a9a4af5bf6cfe3b0bfe0ba243"
+mapnik-vector-tile@1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/mapnik-vector-tile/-/mapnik-vector-tile-1.3.0.tgz#5364faf3445fcc8363dc9490e5cb3b272d21eb45"
 
-mapnik@3.5.14, mapnik@^3.1.2, mapnik@~3.5.0, mapnik@~3.5.14:
-  version "3.5.14"
-  resolved "https://registry.yarnpkg.com/mapnik/-/mapnik-3.5.14.tgz#632bd6635c72c0214a707549309ba416594afff7"
+mapnik@^3.1.2, mapnik@~3.6.0:
+  version "3.6.0"
+  resolved "https://registry.yarnpkg.com/mapnik/-/mapnik-3.6.0.tgz#0b466d294fae96e88837b5c807e287d4aef9412d"
   dependencies:
-    mapnik-vector-tile "~1.2.2"
-    nan "~2.4.0"
+    mapnik-vector-tile "1.3.0"
+    nan "~2.5.0"
     node-pre-gyp "~0.6.30"
-    protozero "~1.4.2"
+    protozero "1.5.1"
 
 mbtiles@^0.9.0:
   version "0.9.0"
@@ -1635,11 +1640,11 @@ merge-descriptors@1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/merge-descriptors/-/merge-descriptors-1.0.1.tgz#b00aaa556dd8b44568150ec9d1b953f3f90cbb61"
 
-method-override@^2.3.7:
-  version "2.3.7"
-  resolved "https://registry.yarnpkg.com/method-override/-/method-override-2.3.7.tgz#8e1d47ac480fb0cd8777083f11c896901166b2e5"
+method-override@^2.3.8:
+  version "2.3.8"
+  resolved "https://registry.yarnpkg.com/method-override/-/method-override-2.3.8.tgz#178234bf4bab869f89df9444b06fc6147b44828c"
   dependencies:
-    debug "2.3.3"
+    debug "2.6.3"
     methods "~1.1.2"
     parseurl "~1.3.1"
     vary "~1.1.0"
@@ -1690,20 +1695,20 @@ moment@2.x.x:
   version "2.17.1"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.17.1.tgz#fed9506063f36b10f066c8b59a144d7faebe1d82"
 
-mongodb-core@2.1.8:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.8.tgz#b33e0370d0a59d97b6cb1ec610527be9e95ca2c0"
+mongodb-core@2.1.10:
+  version "2.1.10"
+  resolved "https://registry.yarnpkg.com/mongodb-core/-/mongodb-core-2.1.10.tgz#eb290681d196d3346a492161aa2ea0905e63151b"
   dependencies:
     bson "~1.0.4"
     require_optional "~1.0.0"
 
-mongodb@2.2.24:
-  version "2.2.24"
-  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.24.tgz#80f40d6ec5bdec0ddecf0f9ce0144e794c46449a"
+mongodb@2.2.26:
+  version "2.2.26"
+  resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-2.2.26.tgz#1bd50c557c277c98e1a05da38c9839c4922b034a"
   dependencies:
     es6-promise "3.2.1"
-    mongodb-core "2.1.8"
-    readable-stream "2.1.5"
+    mongodb-core "2.1.10"
+    readable-stream "2.2.7"
 
 mongoose-json-select@^0.2.1:
   version "0.2.1"
@@ -1711,15 +1716,15 @@ mongoose-json-select@^0.2.1:
   dependencies:
     clone "0.1.9"
 
-mongoose@^4.7.1:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.9.0.tgz#5465fc3c1d4c9e43b035e9652412dcce3fa4d55c"
+mongoose@^4.9.9:
+  version "4.9.9"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.9.9.tgz#8671fbe06c945f55fba7ad03797bc02f19516762"
   dependencies:
     async "2.1.4"
     bson "~1.0.4"
     hooks-fixed "2.0.0"
-    kareem "1.2.1"
-    mongodb "2.2.24"
+    kareem "1.4.1"
+    mongodb "2.2.26"
     mpath "0.2.1"
     mpromise "0.5.5"
     mquery "2.3.0"
@@ -1759,9 +1764,13 @@ ms@0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.1.tgz#9cd13c03adbff25b65effde7ce864ee952017098"
 
-ms@0.7.2, ms@^0.7.1:
+ms@0.7.2:
   version "0.7.2"
   resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.2.tgz#ae25cf2512b3885a1d95d7f037868d8431124765"
+
+ms@0.7.3, ms@^0.7.1:
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/ms/-/ms-0.7.3.tgz#708155a5e44e33f5fd0fc53e81d0d40a91be1fff"
 
 multer@^1.3.0:
   version "1.3.0"
@@ -1854,7 +1863,7 @@ object-assign@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-3.0.0.tgz#9bedd5ca0897949bca47e7ff408062d549f587f2"
 
-object-assign@^4.0.1, object-assign@^4.1.0:
+object-assign@^4, object-assign@^4.0.1, object-assign@^4.1.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/object-assign/-/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
 
@@ -2021,9 +2030,9 @@ protocol-buffers@^2.4.7:
     signed-varint "^2.0.0"
     varint "^4.0.0"
 
-protozero@~1.4.2:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/protozero/-/protozero-1.4.5.tgz#80eaa80a4f9c751465c4cb2620d8233b50ec1aff"
+protozero@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/protozero/-/protozero-1.5.1.tgz#5a27df6fb6e1ed743f510812ae76c082f5b16638"
 
 proxy-addr@~1.1.3:
   version "1.1.3"
@@ -2097,21 +2106,21 @@ readable-stream@1.1.x, readable-stream@~1.1.9:
     isarray "0.0.1"
     string_decoder "~0.10.x"
 
-readable-stream@2.1.5, readable-stream@~2.1.4:
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.1.5.tgz#66fa8b720e1438b364681f2ad1a63c618448c9d0"
+readable-stream@2.2.7, "readable-stream@^2.0.0 || ^1.1.13", readable-stream@^2.2.2:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.2.7.tgz#07057acbe2467b22042d36f98c5ad507054e95b1"
   dependencies:
-    buffer-shims "^1.0.0"
+    buffer-shims "~1.0.0"
     core-util-is "~1.0.0"
     inherits "~2.0.1"
     isarray "~1.0.0"
     process-nextick-args "~1.0.6"
-    string_decoder "~0.10.x"
+    string_decoder "~1.0.0"
     util-deprecate "~1.0.1"
 
-"readable-stream@^2.0.0 || ^1.1.13", readable-stream@^2.2.2:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.2.5.tgz#a0b187304e05bab01a4ce2b4cc9c607d5aa1d606"
+readable-stream@~2.1.4:
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.1.5.tgz#66fa8b720e1438b364681f2ad1a63c618448c9d0"
   dependencies:
     buffer-shims "^1.0.0"
     core-util-is "~1.0.0"
@@ -2294,9 +2303,9 @@ setprototypeof@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.0.3.tgz#66567e37043eeb4f04d91bd658c0cbefb55b8e04"
 
-sharp@^0.17.2:
-  version "0.17.2"
-  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.17.2.tgz#3e5e02c27de10a65927b009d29f2f61920d51f81"
+sharp@^0.17.3:
+  version "0.17.3"
+  resolved "https://registry.yarnpkg.com/sharp/-/sharp-0.17.3.tgz#484cd2a70c900370948dcc43e165f78306bff48a"
   dependencies:
     caw "^2.0.0"
     color "^1.0.3"
@@ -2383,7 +2392,7 @@ speedometer@~0.1.2:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/speedometer/-/speedometer-0.1.4.tgz#9876dbd2a169d3115402d48e6ea6329c8816a50d"
 
-sphericalmercator@1.0.x, sphericalmercator@~1.0.1, sphericalmercator@~1.0.2:
+sphericalmercator@~1.0.1:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/sphericalmercator/-/sphericalmercator-1.0.5.tgz#ddc5a049e360e000d0fad9fc22c4071882584980"
 
@@ -2445,6 +2454,12 @@ string-width@^2.0.0:
 string_decoder@~0.10.x:
   version "0.10.31"
   resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-0.10.31.tgz#62e203bc41766c6c28c9fc84301dab1c5310fa94"
+
+string_decoder@~1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/string_decoder/-/string_decoder-1.0.0.tgz#f06f41157b664d86069f84bdbdc9b0d8ab281667"
+  dependencies:
+    buffer-shims "~1.0.0"
 
 stringstream@~0.0.4:
   version "0.0.5"
@@ -2521,16 +2536,16 @@ through@^2.3.6:
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/through/-/through-2.3.8.tgz#0dd4c9ffaabc357960b1b724115d7e0e86a2e1f5"
 
-tilelive-merge@^1.0.3:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/tilelive-merge/-/tilelive-merge-1.1.1.tgz#067d855c1c85125da81a60acb5dbc8e3597c9b2d"
+tilelive-merge@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/tilelive-merge/-/tilelive-merge-1.1.2.tgz#1814669cd760923beb8dd65c32e54dd84a663411"
   dependencies:
     async "^0.9.0"
     mapnik "^3.1.2"
 
-tilelive-modules@^0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/tilelive-modules/-/tilelive-modules-0.3.2.tgz#7e0de45b8ad126991bfbf03b608247fa371e5a4a"
+tilelive-modules@^0.3.3:
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/tilelive-modules/-/tilelive-modules-0.3.3.tgz#1d22c57aecc8db124bfdafd814f22cfc6b9e9055"
 
 tiletype@0.1.x:
   version "0.1.0"

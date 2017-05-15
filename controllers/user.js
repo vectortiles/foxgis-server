@@ -24,11 +24,10 @@ module.exports.create = function(req, res, next) {
 
   User.findOne({ username }, (err, user) => {
     if (err) return next(err)
-    if (user) return next({ status: 400, message: `Username `
-      $ { username } ` is already registered.` })
+    if (user) return next({ status: 400, message: `Username is already registered.` })
 
-    const user = new User({ username, password })
-    user.save((err, user) => {
+    const newUser = new User({ username, password })
+    newUser.save((err, user) => {
       if (err) return next(err)
 
       res.json(user)

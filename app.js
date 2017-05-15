@@ -16,7 +16,7 @@ require('./db')
 const app = express()
 app.set('json spaces', 2)
 
-// // view engine setup
+// view engine setup
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'hbs')
 
@@ -42,10 +42,10 @@ app.use((req, res, next) => {
 // Error handler
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  res.status(err.status || 500)
+  res.json(err.status || 500)
   res.json({
-    error: app.get('env') === 'development' && err.stack ? err.stack.split('\n') : [],
-    message: err.message
+    message: err.message,
+    error: app.get('env') === 'development' ? error.stack && error.stack.split('\n') : undefined
   })
 })
 
