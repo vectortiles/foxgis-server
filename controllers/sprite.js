@@ -143,7 +143,7 @@ module.exports.getSprite = function(req, res, next) {
         fs.readFile(file, (err, buffer) => {
           if (err) return next(err)
           next(null, {
-            id: path.basename(file, path.extname(file)),
+            id: path.parse(file).name,
             svg: buffer
           })
         })
