@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/jingsam/foxgis-server.svg?branch=master)](https://travis-ci.org/jingsam/foxgis-server) [![Coverage Status](https://coveralls.io/repos/github/jingsam/foxgis-server/badge.svg?branch=master)](https://coveralls.io/github/jingsam/foxgis-server?branch=master)
 
-An map server that supports vector tiles
+An map server that creating, serving and rendering vector tiles
 
 ## Dependencies
 - mongodb
