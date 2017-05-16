@@ -1,0 +1,24 @@
+language: node_js
+node_js:
+  - '4'
+  - '6'
+services:
+  - mongodb
+env:
+  - CXX=g++-4.9
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - mongodb-3.2-precise
+    packages:
+      - g++-4.9
+      - mongodb-org-server
+      - xvfb
+      - libgles2-mesa-dev
+cache:
+  yarn: true
+script:
+  - xvfb-run -a -s '-screen 0 800x600x24' npm run test
+after_script:
+  - npm run coverage

@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node ./bin/www",
     "lint": "eslint *.js",
-    "test": "npm run lint && nyc tape ./test/*.test.js"
+    "test": "npm run lint && nyc tape ./test/*.test.js",
+    "coverage": "nyc report --reporter=text-lcov | coveralls"
   },
   "engines": {
     "node": ">=4"
@@ -51,6 +52,7 @@
     "tilelive-modules": "^0.3.3"
   },
   "devDependencies": {
+    "coveralls": "^2.13.1",
     "eslint": "^3.19.0",
     "nyc": "^10.3.2",
     "supertest": "^3.0.0",

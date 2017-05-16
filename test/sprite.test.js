@@ -6,7 +6,7 @@ const request = require('supertest')(app)
 
 
 test('Sprite API test', t => {
-  let spriteId
+  var spriteId
 
   t.test('Create a sprite', t => {
     request
