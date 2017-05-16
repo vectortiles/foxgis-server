@@ -3,4 +3,5 @@ An map server that supports vector tiles
 
 ## Dependencies
 - mongodb
-- gcc
+- gcc (for compiling sharp)
+- Xvfb

@@ -50,9 +50,9 @@ router.get('/tilesets/:owner/:tilesetIds/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w
 // Font API
 router.get('/fonts/:owner', fonts.list)
 router.get('/fonts/:owner/:fontname', fonts.get)
-router.post('/fonts/:owner', upload.any(), fonts.create)
+router.put('/fonts/:owner', upload.any(), fonts.create)
 router.delete('/fonts/:owner/:fontname', fonts.delete)
-router.get('/fonts/:owner/:fontstack/:start-:end.pbf', fonts.getGlyphs)
+router.get('/fonts/:owner/:fontstack/:start(\\d+)-:end(\\d+).pbf', fonts.getGlyphs)
 
 // Sprite API
 router.get('/sprites/:owner', sprites.list)

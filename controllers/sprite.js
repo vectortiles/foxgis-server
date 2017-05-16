@@ -93,7 +93,6 @@ module.exports.createIcon = function(req, res, next) {
 
   const filePath = req.files[0].path
   const originalname = req.files[0].originalname
-
   if (path.extname(originalname).toLowerCase() !== '.svg') {
     fs.unlink(filePath)
     return next({ status: 400, message: 'Only supports svg icons.' })

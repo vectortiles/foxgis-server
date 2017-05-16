@@ -11,7 +11,7 @@ const Font = require('../models/font')
 module.exports.list = function(req, res, next) {
   const owner = req.params.owner
 
-  Font.find({owner}, '-coverages', (err, fonts) => {
+  Font.find({ owner }, '-coverages', (err, fonts) => {
     if (err) return next(err)
 
     res.json(fonts)
@@ -23,7 +23,7 @@ module.exports.get = function(req, res, next) {
   const owner = req.params.owner
   const fontname = req.params.fontname
 
-  Font.findOne({owner, fontname}, (err, font) => {
+  Font.findOne({ owner, fontname }, (err, font) => {
     if (err) return next(err)
     if (!font) return res.sendStatus(404)
 
@@ -40,7 +40,7 @@ module.exports.create = function(req, res, next) {
   const ext = path.extname(originalname).toLowerCase()
   if (ext !== '.ttf' && ext !== '.otf') {
     fs.unlink(filePath)
-    return res.status(400).json({message: 'Only supports otf, ttf fonts.'})
+    return next({ status: 400, message: 'Only supports otf, ttf fonts.' })
   }
 
   async.autoInject({
@@ -101,7 +101,7 @@ module.exports.delete = function(req, res, next) {
   const fontname = req.params.fontname
   const fontPath = path.join('fonts', owner, fontname)
 
-  Font.findOneAndRemove({owner, fontname}, (err, font) => {
+  Font.findOneAndRemove({ owner, fontname }, (err, font) => {
     if (err) return next(err)
     if (!font) return res.sendStatus(404)
 
@@ -133,12 +133,12 @@ module.exports.getGlyphs = function(req, res, next) {
 
     glyphs: (fonts, callback) => {
       async.map(fonts, (font, next) => {
-        fontnik.range({font, start, end}, next)
+        fontnik.range({ font, start, end }, next)
       }, callback)
     },
 
     combine: (glyphs, callback) => {
-      if (glyphs.length === 0) return callback({status: 404})
+      if (glyphs.length === 0) return callback({ status: 404 })
       callback(null, glyphPbfComposite.combine(glyphs))
     }
   }, (err, results) => {
