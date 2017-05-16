@@ -1,7 +1,6 @@
 const test = require('tape')
 const fs = require('fs')
 const app = require('../app')
-const Sprite = require('../models/sprite')
 const request = require('supertest')(app)
 
 
@@ -13,7 +12,7 @@ test('Sprite API test', t => {
       .post('/api/v1/sprites/test')
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.equal(res.body.owner, 'test')
         t.ok(res.body.spriteId)
@@ -28,7 +27,7 @@ test('Sprite API test', t => {
       .get('/api/v1/sprites/test')
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.ok(res.body.find(sprite => sprite.spriteId === spriteId))
 
@@ -41,7 +40,7 @@ test('Sprite API test', t => {
       .get(`/api/v1/sprites/test/${spriteId}`)
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.equal(res.body.owner, 'test')
         t.equal(res.body.spriteId, spriteId)
@@ -56,7 +55,7 @@ test('Sprite API test', t => {
       .send({ owner: 'test2', name: 'Sprite2', description: 'aaa' })
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.equal(res.body.owner, 'test')
         t.equal(res.body.spriteId, spriteId)
@@ -73,7 +72,7 @@ test('Sprite API test', t => {
       .attach('icon', './test/fixtures/airfield-11.svg')
       .expect(204)
       .end(err => {
-        if (err) return t.error(err)
+        t.error(err)
         t.end()
       })
   })
@@ -83,7 +82,7 @@ test('Sprite API test', t => {
       .get(`/api/v1/sprites/test/${spriteId}/sprite.json`)
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.deepEqual(res.body, require('./fixtures/sprite'))
 
@@ -96,7 +95,7 @@ test('Sprite API test', t => {
       .get(`/api/v1/sprites/test/${spriteId}/sprite@2x.json`)
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.deepEqual(res.body, require('./fixtures/sprite@2x'))
 
@@ -110,7 +109,7 @@ test('Sprite API test', t => {
       .expect(200)
       .expect('Content-Type', 'image/png')
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.ok(res.body.equals(fs.readFileSync('./test/fixtures/sprite.png')))
 
@@ -123,7 +122,7 @@ test('Sprite API test', t => {
       .get(`/api/v1/sprites/test/${spriteId}/sprite@2x.png`)
       .expect(200)
       .end((err, res) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         t.ok(res.body.equals(fs.readFileSync('./test/fixtures/sprite@2x.png')))
 
@@ -136,13 +135,13 @@ test('Sprite API test', t => {
       .delete(`/api/v1/sprites/test/${spriteId}/icons/marker`)
       .expect(204)
       .end((err) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         request
           .get(`/api/v1/sprites/test/${spriteId}/sprite`)
           .expect(200)
           .end((err, res) => {
-            if (err) return t.error(err)
+            t.error(err)
 
             t.notOk(res.body.marker)
 
@@ -156,13 +155,13 @@ test('Sprite API test', t => {
       .delete(`/api/v1/sprites/test/${spriteId}`)
       .expect(204)
       .end((err) => {
-        if (err) return t.error(err)
+        t.error(err)
 
         request
           .get(`/api/v1/sprites/test/${spriteId}`)
           .expect(404)
           .end((err) => {
-            if (err) return t.error(err)
+            t.error(err)
             t.end()
           })
       })
