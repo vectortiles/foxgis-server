@@ -128,7 +128,7 @@ module.exports.deleteIcon = function(req, res, next) {
 module.exports.getSprite = function(req, res, next) {
   const owner = req.params.owner
   const spriteId = req.params.spriteId
-  const scale = +(req.params.scale || '@1x').slice(1, 2)
+  const pixelRatio = +(req.params.scale || '@1x').slice(1, 2)
   const format = req.params.format || 'json'
   const spriteDir = path.join('sprites', owner, spriteId)
 
@@ -137,7 +137,7 @@ module.exports.getSprite = function(req, res, next) {
       rd.readFileFilter(spriteDir, /\.svg$/i, callback)
     },
 
-    svgs: (files, callback) => {
+    imgs: (files, callback) => {
       async.map(files, (file, next) => {
         fs.readFile(file, (err, buffer) => {
           if (err) return next(err)
@@ -149,11 +149,11 @@ module.exports.getSprite = function(req, res, next) {
       }, callback)
     },
 
-    sprite: (svgs, callback) => {
+    sprite: (imgs, callback) => {
       if (format === 'json') {
-        spritezero.generateLayout(svgs, scale, true, callback)
+        spritezero.generateLayout({ imgs, pixelRatio, format: true }, callback)
       } else {
-        spritezero.generateLayout(svgs, scale, false, (err, layout) => {
+        spritezero.generateLayout({ imgs, pixelRatio, format: false }, (err, layout) => {
           if (err) return callback(err)
           spritezero.generateImage(layout, callback)
         })
