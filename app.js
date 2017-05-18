@@ -15,6 +15,7 @@ require('./db')
 
 const app = express()
 app.set('json spaces', 2)
+app.set('trust proxy', true)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))

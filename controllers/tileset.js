@@ -26,40 +26,13 @@ module.exports.list = function(req, res, next) {
 
 module.exports.get = function(req, res, next) {
   const owner = req.params.owner
-  const tilesetIds = req.params.tilesetIds.split(',').map(id => id.trim())
-  const tilesetPath = path.join('tilesets', owner, tilesetId)
+  const tilesetId = req.params.tilesetId
 
-  const source = {
-    protocol: "merge:",
-    query: {
-      sources: tilesetIds.map(tilesetId => 'mbtiles://' + path.resolve('tilesets', owner, tilesetId))
-    }
-  }
-
-  async.reduce(tilesetIds, [], (tilesets, tilesetId, callback) => {
-    Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
-      if (!err) tilesets.push(tileset)
-      callback(null, tilesets)
-    })
-  }, (err, tilesets) => {
+  Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
     if (err) return next(err)
-    if (!tilesets.length) return res.sendStatus(404)
+    if (!tileset) return res.sendStatus(404)
 
-    tilelive.getInfo(source, (err, info) => {
-      if (err) return next(err)
-
-      const urlObject = url.parse(req.originalUrl)
-      urlObject.protocol = req.protocol
-      urlObject.host = req.get('host')
-      urlObject.pathname = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
-      info.tiles = [url.format(urlObject)]
-      info.scheme = 'xyz'
-      info.tilesetId = tilesets.map(tileset => tileset.tilesetId).join(',')
-      info.name = tilesets.map(tileset => tileset.name).join(',')
-      info.description = tilesets.map(tileset => tileset.description).join(',')
-
-      res.json(info)
-    })
+    res.json(tileset)
   })
 }
 
@@ -80,7 +53,9 @@ module.exports.create = function(req, res, next) {
       Tileset.findOne({ owner, tilesetId }, (err, tileset) => {
         if (err) return callback(err)
         if (!tileset) return callback({ status: 404 })
-        if (!tileset.complete) return callback({ status: 400, message: 'Previous uploading has not completed yet.' })
+        if (!tileset.complete) return callback({
+          status: 400, message: 'Previous uploading has not completed yet.'
+        })
 
         callback(null, tileset)
       })
@@ -92,7 +67,7 @@ module.exports.create = function(req, res, next) {
 
     source: (fileinfo, callback) => {
       if (fileinfo.protocol !== 'omnivore:' && fileinfo.protocol !== 'mbtiles:') {
-        return callback({ status: 400, message: 'Unsupport file format.' })
+        return callback({ status: 400, message: 'Unsupported file format.' })
       }
 
       if (fileinfo.type === 'zip') {
@@ -114,10 +89,10 @@ module.exports.create = function(req, res, next) {
     },
 
     copy: (tileset, source, tilesetDir, callback) => {
-      // Early callback so that import tileset in the background
+      // Early callback so that importing tileset in the background
       callback()
 
-      const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}`
+      const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}.mbtiles`
       const options = {
         retry: 2,
         timeout: 120000,
@@ -125,7 +100,7 @@ module.exports.create = function(req, res, next) {
         progress: _.throttle((stats, p) => {
           tileset.progress = Math.round(p.percentage)
           tileset.save()
-        }, 1000, { trailing: true })
+        }, 5000, { trailing: true })
       }
 
       tilelive.copy(source, dest, options, err => {
@@ -137,7 +112,7 @@ module.exports.create = function(req, res, next) {
     },
 
     writeDB: (tileset, info, callback) => {
-      tileset.name = tileset.name || info.name || path.basename(originalname, path.extname(originalname))
+      tileset.name = tileset.name || info.name || path.parse(originalname).name
       tileset.description = tileset.description || info.description
       tileset.complete = false
       tileset.progress = 0
@@ -158,7 +133,7 @@ module.exports.create = function(req, res, next) {
 module.exports.update = function(req, res, next) {
   const owner = req.params.owner
   const tilesetId = req.params.tilesetId
-  const update = _.pick(req.body, ['name', 'description'])
+  const update = _.pick(req.body, ['name', 'description', 'private'])
 
   Tileset.findOneAndUpdate({ owner, tilesetId }, update, { new: true }, (err, tileset) => {
     if (err) return next(err)
@@ -187,6 +162,34 @@ module.exports.delete = function(req, res, next) {
 }
 
 
+module.exports.getTileJSON = function(req, res, next) {
+  const owner = req.params.owner
+  const tilesetIds = req.params.tilesetIds.split(',').map(id => id.trim())
+
+  const source = {
+    protocol: "merge:",
+    query: {
+      sources: tilesetIds.map(tilesetId => {
+        return 'mbtiles://' + path.resolve('tilesets', owner, tilesetId) + '.mbtiles'
+      })
+    }
+  }
+
+  tilelive.info(source, (err, info) => {
+    if (err) return next(err)
+
+    const urlObject = url.parse(req.originalUrl)
+    urlObject.protocol = req.protocol
+    urlObject.host = req.get('X-Forwarded-Host') || req.get('Host')
+    urlObject.pathname = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
+    info.tiles = [url.format(urlObject)]
+    info.scheme = 'xyz'
+
+    res.json(info)
+  })
+}
+
+
 module.exports.getTile = function(req, res, next) {
   const owner = req.params.owner
   const tilesetIds = req.params.tilesetIds.split(',').map(id => id.trim())
@@ -197,7 +200,9 @@ module.exports.getTile = function(req, res, next) {
   const source = {
     protocol: "merge:",
     query: {
-      sources: tilesetIds.map(tilesetId => 'mbtiles://' + path.resolve('tilesets', owner, tilesetId))
+      sources: tilesetIds.map(tilesetId => {
+        return 'mbtiles://' + path.resolve('tilesets', owner, tilesetId) + '.mbtiles'
+      })
     }
   }
 
