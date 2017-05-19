@@ -117,8 +117,7 @@ module.exports.deleteIcon = function(req, res, next) {
   const iconPath = path.join('sprites', owner, spriteId, icon + '.svg')
 
   fs.unlink(iconPath, err => {
-    if (err && err.code === 'ENOENT') return res.sendStatus(404)
-    if (err) return next(err)
+    if (err && err.code !== 'ENOENT') return next(err)
 
     res.sendStatus(204)
   })

@@ -84,7 +84,7 @@ test('Sprite API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.deepEqual(res.body, require('./fixtures/sprite'))
+        t.deepEqual(res.body, require('./expected/sprite'))
 
         t.end()
       })
@@ -97,7 +97,7 @@ test('Sprite API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.deepEqual(res.body, require('./fixtures/sprite@2x'))
+        t.deepEqual(res.body, require('./expected/sprite@2x'))
 
         t.end()
       })
@@ -111,7 +111,7 @@ test('Sprite API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.ok(res.body.equals(fs.readFileSync('./test/fixtures/sprite.png')))
+        t.ok(res.body.equals(fs.readFileSync('./test/expected/sprite.png')))
 
         t.end()
       })
@@ -124,7 +124,7 @@ test('Sprite API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.ok(res.body.equals(fs.readFileSync('./test/fixtures/sprite@2x.png')))
+        t.ok(res.body.equals(fs.readFileSync('./test/expected/sprite@2x.png')))
 
         t.end()
       })

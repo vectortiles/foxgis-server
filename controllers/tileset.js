@@ -94,7 +94,7 @@ module.exports.create = function(req, res, next) {
 
       const dest = `mbtiles://${path.resolve(tilesetDir)}/${tileset.tilesetId}.mbtiles`
       const options = {
-        retry: 2,
+        retry: 3,
         timeout: 120000,
         close: true,
         progress: _.throttle((stats, p) => {
@@ -154,7 +154,7 @@ module.exports.delete = function(req, res, next) {
     if (!tileset) return res.sendStatus(404)
 
     fs.unlink(tilesetPath, err => {
-      if (err) return next(err)
+      if (err && err.code !== 'ENOENT') return next(err)
 
       res.sendStatus(204)
     })
@@ -170,7 +170,7 @@ module.exports.getTileJSON = function(req, res, next) {
     protocol: "merge:",
     query: {
       sources: tilesetIds.map(tilesetId => {
-        return 'mbtiles://' + path.resolve('tilesets', owner, tilesetId) + '.mbtiles'
+        return 'mbtiles://' + path.resolve('tilesets', owner, tilesetId) + '.mbtiles?mode=READONLY'
       })
     }
   }
@@ -184,6 +184,9 @@ module.exports.getTileJSON = function(req, res, next) {
     urlObject.pathname = urlObject.pathname + '/{z}/{x}/{y}.' + info.format
     info.tiles = [url.format(urlObject)]
     info.scheme = 'xyz'
+
+    delete info.name
+    delete info.description
 
     res.json(info)
   })
@@ -201,7 +204,7 @@ module.exports.getTile = function(req, res, next) {
     protocol: "merge:",
     query: {
       sources: tilesetIds.map(tilesetId => {
-        return 'mbtiles://' + path.resolve('tilesets', owner, tilesetId) + '.mbtiles'
+        return 'mbtiles://' + path.resolve('tilesets', owner, tilesetId) + '.mbtiles?mode=READONLY'
       })
     }
   }
@@ -213,6 +216,8 @@ module.exports.getTile = function(req, res, next) {
       if (err) return next(err)
       if (!data) return res.sendStatus(404)
 
+      delete headers['Cache-Control']
+      delete headers['Last-Modified']
       res.set(headers)
       res.send(data)
     })

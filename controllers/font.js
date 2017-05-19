@@ -106,7 +106,7 @@ module.exports.delete = function(req, res, next) {
     if (!font) return res.sendStatus(404)
 
     fs.unlink(fontPath, err => {
-      if (err) return next(err)
+      if (err && err.code !== 'ENOENT') return next(err)
 
       res.sendStatus(204)
     })

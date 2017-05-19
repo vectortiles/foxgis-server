@@ -13,8 +13,8 @@ test('Font API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.equal(res.body.fontname, 'Arial Unicode MS Regular')
         t.equal(res.body.owner, 'test')
+        t.equal(res.body.fontname, 'Arial Unicode MS Regular')
         t.equal(res.body.familyName, 'Arial Unicode MS')
         t.equal(res.body.styleName, 'Regular')
         t.ok(res.body.coverages)
@@ -31,8 +31,8 @@ test('Font API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.equal(res.body.fontname, 'Source Code Pro Regular')
         t.equal(res.body.owner, 'test')
+        t.equal(res.body.fontname, 'Source Code Pro Regular')
         t.equal(res.body.familyName, 'Source Code Pro')
         t.equal(res.body.styleName, 'Regular')
         t.ok(res.body.coverages)
@@ -48,8 +48,8 @@ test('Font API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.equal(res.body.fontname, 'Arial Unicode MS Regular')
         t.equal(res.body.owner, 'test')
+        t.equal(res.body.fontname, 'Arial Unicode MS Regular')
         t.equal(res.body.familyName, 'Arial Unicode MS')
         t.equal(res.body.styleName, 'Regular')
         t.ok(res.body.coverages)
@@ -79,7 +79,7 @@ test('Font API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.ok(res.body.equals(fs.readFileSync('./test/fixtures/0-255.pbf')))
+        t.ok(res.body.equals(fs.readFileSync('./test/expected/0-255.pbf')))
 
         t.end()
       })
