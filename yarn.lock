@@ -377,20 +377,20 @@ bluebird@2.10.2:
   version "2.10.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-2.10.2.tgz#024a5517295308857f14f91f1106fc3b555f446b"
 
-body-parser@^1.17.1:
-  version "1.17.1"
-  resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.17.1.tgz#75b3bc98ddd6e7e0d8ffe750dfaca5c66993fa47"
+body-parser@^1.17.2:
+  version "1.17.2"
+  resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.17.2.tgz#f8892abc8f9e627d42aedafbca66bf5ab99104ee"
   dependencies:
     bytes "2.4.0"
     content-type "~1.0.2"
-    debug "2.6.1"
+    debug "2.6.7"
     depd "~1.1.0"
     http-errors "~1.6.1"
     iconv-lite "0.4.15"
     on-finished "~2.3.0"
     qs "6.4.0"
     raw-body "~2.2.0"
-    type-is "~1.6.14"
+    type-is "~1.6.15"
 
 boom@2.x.x:
   version "2.10.1"
@@ -773,9 +773,15 @@ debug@2.6.3:
   dependencies:
     ms "0.7.2"
 
-debug@2.6.7, debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.6.7:
+debug@2.6.7:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.7.tgz#92bad1f6d05bbb6bba22cca88bcd0ec894c2861e"
+  dependencies:
+    ms "2.0.0"
+
+debug@^2.1.1, debug@^2.2.0, debug@^2.6.3, debug@^2.6.8:
+  version "2.6.8"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.8.tgz#e731531ca2ede27d188222427da17821d68ff4fc"
   dependencies:
     ms "2.0.0"
 
@@ -2182,7 +2188,7 @@ mime-types@^2.1.12, mime-types@~2.1.15:
   dependencies:
     mime-db "~1.27.0"
 
-mime-types@~2.1.11, mime-types@~2.1.13, mime-types@~2.1.7:
+mime-types@~2.1.11, mime-types@~2.1.7:
   version "2.1.14"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.14.tgz#f7ef7d97583fcaf3b7d282b6f8b5679dab1e94ee"
   dependencies:
@@ -2241,9 +2247,9 @@ mongoose-json-select@^0.2.1:
   dependencies:
     clone "0.1.9"
 
-mongoose@^4.9.9:
-  version "4.9.9"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.9.9.tgz#8671fbe06c945f55fba7ad03797bc02f19516762"
+mongoose@^4.10.0:
+  version "4.10.0"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-4.10.0.tgz#f4ff031f8b9e7105ae62b7cb3d4fc4e00f320b87"
   dependencies:
     async "2.1.4"
     bson "~1.0.4"
@@ -3288,10 +3294,6 @@ tilelive-merge@mojodna/tilelive-merge:
     async "^0.9.0"
     mapnik "^3.1.2"
 
-tilelive-modules@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/tilelive-modules/-/tilelive-modules-0.3.3.tgz#1d22c57aecc8db124bfdafd814f22cfc6b9e9055"
-
 tilelive-modules@mojodna/tilelive-modules:
   version "0.3.3"
   resolved "https://codeload.github.com/mojodna/tilelive-modules/tar.gz/48442b6888017b7d695ca750f7a34f239eb90022"
@@ -3350,13 +3352,6 @@ type-is@^1.6.4, type-is@~1.6.15:
   dependencies:
     media-typer "0.3.0"
     mime-types "~2.1.15"
-
-type-is@~1.6.14:
-  version "1.6.14"
-  resolved "https://registry.yarnpkg.com/type-is/-/type-is-1.6.14.tgz#e219639c17ded1ca0789092dd54a03826b817cb2"
-  dependencies:
-    media-typer "0.3.0"
-    mime-types "~2.1.13"
 
 typedarray@^0.0.6:
   version "0.0.6"
