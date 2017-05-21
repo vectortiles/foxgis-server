@@ -98,3 +98,5 @@ test('Style API test', t => {
       })
   })
 })
+
+test.onFinish(() => process.exit(0))
