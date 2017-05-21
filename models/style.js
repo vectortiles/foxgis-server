@@ -14,12 +14,7 @@ const StyleSchema = new mongoose.Schema({
   zoom: Number,
   bearing: Number,
   pitch: Number,
-  light: {
-    anchor: String,
-    position: { type: [Number], default: [1.15, 210, 30] },
-    color: String,
-    intensity: Number
-  },
+  light: mongoose.Schema.Types.Mixed,
   sources: mongoose.Schema.Types.Mixed,
   sprite: String,
   glyphs: String,

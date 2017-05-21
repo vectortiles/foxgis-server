@@ -15,12 +15,16 @@
 
 <div id='map'></div>
 <script>
-mapboxgl.accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2owMXpsMTlhMDNnbDJ3b2x2dGloZGV1aCJ9.mvM8UjjqsDRWolzvhjZoww';
+mapboxgl.accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2owMXpsMTlhMDNnbDJ3b2x2dGloZGV1aCJ9.mvM8UjjqsDRWolzvhjZoww'
 var map = new mapboxgl.Map({
     container: 'map',
     style: '{{style}}',
-    hash: true
-});
+    hash: true,
+    attributionControl: false
+})
+
+map.addControl(new mapboxgl.NavigationControl())
+map.addControl(new mapboxgl.ScaleControl())
 </script>
 
 </body>

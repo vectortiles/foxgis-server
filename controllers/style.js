@@ -5,14 +5,15 @@ const sharp = require('sharp')
 const request = require('request')
 const mbgl = require('@mapbox/mapbox-gl-native')
 const SphericalMercator = require('@mapbox/sphericalmercator')
-const mbutil = require('./mapbox')
+const mapbox = require('./mapbox')
 const Style = require('../models/style')
 
 
 module.exports.list = function(req, res, next) {
   const owner = req.params.owner
+  const fields = 'styleId owner name description version createdAt updatedAt'
 
-  Style.find({ owner }, 'styleId owner name description version createdAt updatedAt', (err, styles) => {
+  Style.find({ owner }, fields, (err, styles) => {
     if (err) return next(err)
 
     res.json(styles)
@@ -122,11 +123,11 @@ module.exports.getStatic = function(req, res, next) {
     height: +req.params.height,
     center: [+req.params.lon, +req.params.lat],
     bearing: +req.params.bearing || 0,
-    pitch: +req.params.bearing || 0,
+    pitch: +req.params.pitch || 0,
     format: req.params.format || 'png',
     scale: +(req.params.scale || '@1x').slice(1, 2)
   }
-
+console.log(req.params)
   Style.findOne({ owner, styleId }, (err, style) => {
     if (err) return next(err)
     if (!style) return res.sendStatus(404)
@@ -144,7 +145,7 @@ module.exports.getStatic = function(req, res, next) {
 module.exports.getHtml = function(req, res, next) {
   const urlObject = url.parse(req.originalUrl)
   urlObject.protocol = req.protocol
-  urlObject.host = req.get('host')
+  urlObject.host = req.get('X-Forwarded-Host') || req.get('Host')
   urlObject.pathname = path.dirname(urlObject.pathname)
 
   const style = url.format(urlObject)
@@ -153,28 +154,26 @@ module.exports.getHtml = function(req, res, next) {
 
 
 function render(style, options, callback) {
-  const accessToken = 'pk.eyJ1IjoibWFwZXIiLCJhIjoiY2owMXpsMTlhMDNnbDJ3b2x2dGloZGV1aCJ9.mvM8UjjqsDRWolzvhjZoww'
-
   const mapOptions = {
     request: (req, callback) => {
       switch (req.kind) {
         case mbgl.Resource.Style:
-          req.url = mbutil.normalizeStyleURL(req.url, accessToken)
+          req.url = mapbox.normalizeStyleURL(req.url)
           break
         case mbgl.Resource.Source:
-          req.url = mbutil.normalizeSourceURL(req.url, accessToken)
+          req.url = mapbox.normalizeSourceURL(req.url)
           break
         case mbgl.Resource.Tile:
-          req.url = mbutil.normalizeTileURL(req.url, accessToken)
+          req.url = mapbox.normalizeTileURL(req.url)
           break
         case mbgl.Resource.Glyphs:
-          req.url = mbutil.normalizeGlyphsURL(req.url, accessToken)
+          req.url = mapbox.normalizeGlyphsURL(req.url)
           break
         case mbgl.Resource.SpriteImage:
-          req.url = mbutil.normalizeSpriteURL(req.url, accessToken)
+          req.url = mapbox.normalizeSpriteURL(req.url)
           break
         case mbgl.Resource.SpriteJSON:
-          req.url = mbutil.normalizeSpriteURL(req.url, accessToken)
+          req.url = mapbox.normalizeSpriteURL(req.url)
           break
       }
 
@@ -200,6 +199,10 @@ function render(style, options, callback) {
       }
     })
 
-    image.toFormat(options.format).toBuffer(callback)
+    try {
+      image.toFormat(options.format).toBuffer(callback)
+    } catch (e) {   // catch the unsupported format error
+      callback(e)
+    }
   })
 }

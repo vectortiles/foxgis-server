@@ -84,7 +84,7 @@ test('Sprite API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.deepEqual(res.body, require('./expected/sprite'))
+        t.deepEqual(res.body, require('./expected/sprite.json'))
 
         t.end()
       })
@@ -97,7 +97,7 @@ test('Sprite API test', t => {
       .end((err, res) => {
         t.error(err)
 
-        t.deepEqual(res.body, require('./expected/sprite@2x'))
+        t.deepEqual(res.body, require('./expected/sprite@2x.json'))
 
         t.end()
       })
