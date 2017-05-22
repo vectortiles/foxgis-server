@@ -63,6 +63,20 @@ module.exports.update = function(req, res, next) {
 }
 
 
+module.exports.replace = function(req, res, next) {
+  const owner = req.params.owner
+  const styleId = req.params.styleId
+  const update = _.omit(req.body, ['styleId', 'owner', 'name', 'description', 'createdAt', 'updatedAt'])
+
+  Style.findOneAndUpdate({ owner, styleId }, update, { new: true }, (err, style) => {
+    if (err) return next(err)
+    if (!style) return res.sendStatus(404)
+
+    res.json(style)
+  })
+}
+
+
 module.exports.delete = function(req, res, next) {
   const owner = req.params.owner
   const styleId = req.params.styleId
