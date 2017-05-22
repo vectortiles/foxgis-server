@@ -127,7 +127,7 @@ module.exports.getStatic = function(req, res, next) {
     format: req.params.format || 'png',
     scale: +(req.params.scale || '@1x').slice(1, 2)
   }
-console.log(req.params)
+
   Style.findOne({ owner, styleId }, (err, style) => {
     if (err) return next(err)
     if (!style) return res.sendStatus(404)

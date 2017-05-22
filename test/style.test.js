@@ -64,7 +64,7 @@ test('Style API test', t => {
         t.equal(res.body.sprite, update.sprite)
         t.equal(res.body.glyphs, update.glyphs)
         t.deepEqual(res.body.sources, update.sources)
-        t.deepEqual(res.body.layers, update.layers)
+        t.deepEqual(res.body.layers[0].paint, update.layers[0].paint)
 
         t.end()
       })
@@ -86,17 +86,34 @@ test('Style API test', t => {
 
   t.test('Get a static image', t => {
     request
-      .get(`/api/v1/styles/test/${styleId}/static/`)
+      .get(`/api/v1/styles/test/${styleId}/static/0,0,0,90.5,50.5/200x200@2x.png`)
       .responseType('blob')
       .expect(200)
       .end((err, res) => {
         t.error(err)
 
-        t.ok(res.body.equals(fs.readFileSync('./test/expected/0@2x.png')))
+        t.ok(res.body.equals(fs.readFileSync('./test/expected/200x200@2x.png')))
 
         t.end()
       })
   })
+
+  t.test('Get a html', t => {
+    request
+      .get(`/api/v1/styles/test/${styleId}/html`)
+      .expect(200)
+      .expect('Content-Type', 'text/html; charset=utf-8')
+      .end(t.end)
+  })
+
+  t.test('Delete a style', t => {
+    request
+      .delete(`/api/v1/styles/test/${styleId}`)
+      .expect(204)
+      .end(t.end)
+  })
 })
+
+
 
 test.onFinish(() => process.exit(0))

@@ -13,7 +13,7 @@ const upload = multer({
   dest: 'uploads/',
   limits: { fieldSize: 200000000, files: 1 }
 })
-const reFloat = '\\d+'
+const reFloat = '[+-]?(?:\\d+|\\d+\.?\\d+)'
 
 // User API
 router.get('/users/:username', users.get)
@@ -36,7 +36,8 @@ router.post('/styles/:owner', styles.create)
 router.patch('/styles/:owner/:styleId', styles.update)
 router.delete('/styles/:owner/:styleId', styles.delete)
 router.get('/styles/:owner/:styleId/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@[1-4]x)?.:format([\\w\\.]+)', styles.getTile)
-router.get(`/styles/:owner/:styleId/static/:lon(${reFloat}),:lat,:zoom(\\d+)(,)?:bearing(\\d+)?(,)?:pitch?` +
+router.get('/styles/:owner/:styleId/static' +
+  `/:lon(${reFloat}),:lat(${reFloat}),:zoom(\\d+)(,)?:bearing(${reFloat})?(,)?:pitch(${reFloat})?` +
   '/:width(\\d+)x:height(\\d+):scale(@[1-4]x)?.:format([\\w\\.]+)', styles.getStatic)
 router.get('/styles/:owner/:styleId/html', styles.getHtml)
 
