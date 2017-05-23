@@ -95,11 +95,7 @@ test('Font API test', t => {
         request
           .delete('/api/v1/fonts/test/Source Code Pro Regular')
           .expect(204)
-          .end(err => {
-            t.error(err)
-
-            t.end()
-          })
+          .end(t.end)
       })
   })
 })

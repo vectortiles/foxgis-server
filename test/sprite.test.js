@@ -71,10 +71,7 @@ test('Sprite API test', t => {
       .put(`/api/v1/sprites/test/${spriteId}/icons/marker`)
       .attach('icon', './test/fixtures/airfield-11.svg')
       .expect(204)
-      .end(err => {
-        t.error(err)
-        t.end()
-      })
+      .end(t.end)
   })
 
   t.test('Get a sprite json', t => {
@@ -160,10 +157,7 @@ test('Sprite API test', t => {
         request
           .get(`/api/v1/sprites/test/${spriteId}`)
           .expect(404)
-          .end((err) => {
-            t.error(err)
-            t.end()
-          })
+          .end(t.end)
       })
   })
 })

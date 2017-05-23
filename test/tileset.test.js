@@ -20,7 +20,7 @@ test('Tileset API test', t => {
         t.ok(res.body.tilesetId)
         tilesetId1 = res.body.tilesetId
 
-        setTimeout(() => t.end(), 5000)
+        setTimeout(() => t.end(), 10000)
       })
   })
 
@@ -36,7 +36,7 @@ test('Tileset API test', t => {
         t.ok(res.body.tilesetId)
         tilesetId2 = res.body.tilesetId
 
-        setTimeout(() => t.end(), 5000)
+        setTimeout(() => t.end(), 10000)
       })
   })
 
@@ -51,7 +51,7 @@ test('Tileset API test', t => {
         t.equal(res.body.owner, 'test')
         t.equal(res.body.tilesetId, tilesetId1)
 
-        setTimeout(() => t.end(), 5000)
+        setTimeout(() => t.end(), 10000)
       })
   })
 
