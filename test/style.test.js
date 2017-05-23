@@ -117,7 +117,7 @@ test('Style API test', t => {
       .end((err, res) => {
         t.error(err)
         // TODO: fix test in travis-ci
-        // t.ok(res.body.equals(fs.readFileSync('./test/expected/200x200@2x.png')))
+        t.ok(res.body.equals(fs.readFileSync('./test/expected/200x200@2x.png')))
 
         t.end()
       })
