@@ -8,18 +8,25 @@ test('Style API test', t => {
   var styleId
 
   t.test('Create a style', t => {
+    var update = require('./fixtures/streets-v9.json')
+
     request
       .post('/api/v1/styles/test')
+      .send(update)
       .expect(200)
       .end((err, res) => {
         t.error(err)
 
         t.equal(res.body.owner, 'test')
         t.ok(res.body.styleId)
+        t.equal(res.body.sprite, update.sprite)
+        t.equal(res.body.glyphs, update.glyphs)
+        t.deepEqual(res.body.sources, update.sources)
+        t.deepEqual(res.body.layers, update.layers)
         styleId = res.body.styleId
 
         t.end()
-      })
+    })
   })
 
   t.test('List all styles', t => {
@@ -50,10 +57,27 @@ test('Style API test', t => {
   })
 
   t.test('Update a style', t => {
-    var update = require('./fixtures/streets-v9.json')
-
     request
       .patch(`/api/v1/styles/test/${styleId}`)
+      .send({ owner: 'test2', styleId: '123', name: 'style', layers: []})
+      .expect(200)
+      .end((err, res) => {
+        t.error(err)
+
+        t.equal(res.body.owner, 'test')
+        t.equal(res.body.styleId, styleId)
+        t.equal(res.body.name, 'style')
+        t.deepEqual(res.body.layers, [])
+
+        t.end()
+      })
+  })
+
+  t.test('Replace a style', t => {
+    var update = require('./fixtures/style.json')
+
+    request
+      .put(`/api/v1/styles/test/${styleId}`)
       .send(update)
       .expect(200)
       .end((err, res) => {
@@ -61,10 +85,11 @@ test('Style API test', t => {
 
         t.equal(res.body.owner, 'test')
         t.equal(res.body.styleId, styleId)
-        t.equal(res.body.sprite, update.sprite)
-        t.equal(res.body.glyphs, update.glyphs)
+        t.equal(res.body.name, 'style')
+        t.notOk(res.body.sprite)
+        t.notOk(res.body.glyphs)
         t.deepEqual(res.body.sources, update.sources)
-        t.deepEqual(res.body.layers[0].paint, update.layers[0].paint)
+        t.deepEqual(res.body.layers, update.layers)
 
         t.end()
       })

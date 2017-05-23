@@ -66,13 +66,20 @@ module.exports.update = function(req, res, next) {
 module.exports.replace = function(req, res, next) {
   const owner = req.params.owner
   const styleId = req.params.styleId
-  const update = _.omit(req.body, ['styleId', 'owner', 'name', 'description', 'createdAt', 'updatedAt'])
+  const fileds = ['version', 'metadata', 'center', 'zoom', 'bearing', 'pitch',
+    'light', 'sources', 'sprite', 'glyphs', 'transition', 'layers']
+  const update = _.pick(req.body, fileds)
 
-  Style.findOneAndUpdate({ owner, styleId }, update, { new: true }, (err, style) => {
+  Style.findOne({ owner, styleId }, (err, style) => {
     if (err) return next(err)
     if (!style) return res.sendStatus(404)
 
-    res.json(style)
+    fileds.forEach(field => style[field] = update[field])
+    style.save((err, style) => {
+      if (err) return next(err)
+
+      res.json(style)
+    })
   })
 }
 
@@ -166,7 +173,8 @@ module.exports.getHtml = function(req, res, next) {
   res.render('index', { style })
 }
 
-
+// debug mapbox-gl-native
+// mbgl.on('message', console.log)
 function render(style, options, callback) {
   const mapOptions = {
     request: (req, callback) => {
