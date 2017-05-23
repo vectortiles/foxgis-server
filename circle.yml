@@ -4,9 +4,9 @@ machine:
 
 dependencies:
   override:
-    - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test; \
+    - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y; \
       sudo apt-get update; \
-      sudo apt-get -y install g++-4.9 xvfb libgles2-mesa-dev
+      sudo apt-get install g++-4.9 xvfb libgles2-mesa-dev -y
     - yarn
   cache_directories:
     - ~/.cache/yarn
