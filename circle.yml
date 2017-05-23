@@ -1,8 +1,6 @@
 machine:
   node:
     version: 4
-  services:
-    - mongodb
 
 dependencies:
   override:
