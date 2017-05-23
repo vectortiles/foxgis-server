@@ -116,7 +116,7 @@ test('Style API test', t => {
       .expect(200)
       .end((err, res) => {
         t.error(err)
-
+        console.log(res.body.length, fs.readFileSync('./test/expected/200x200@2x.png').length)
         t.ok(res.body.equals(fs.readFileSync('./test/expected/200x200@2x.png')))
 
         t.end()
