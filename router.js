@@ -11,7 +11,7 @@ const sprites = require('./controllers/sprite')
 const router = express.Router()
 const upload = multer({
   dest: 'uploads/',
-  limits: { fieldSize: 200000000, files: 1 }
+  limits: { fileSize: 200000000, files: 1 }
 })
 const reFloat = '[+-]?(?:\\d+|\\d+\.?\\d+)'
 
